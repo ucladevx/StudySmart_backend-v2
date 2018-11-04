@@ -1,0 +1,23 @@
+{
+  "name": "backend-v2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aseem191/backend-v2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/aseem191/backend-v2/issues"
+  },
+  "homepage": "https://github.com/aseem191/backend-v2#readme",
+  "dependencies": {
+    "express.js": "^1.0.0"
+  }
+}
