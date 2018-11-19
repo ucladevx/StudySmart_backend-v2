@@ -1,0 +1,481 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+    <head><link rel="stylesheet" type="text/css" href="https://uhf.microsoft.com/mscc/statics/mscc-0.3.6.min.css" xmlns="http://www.w3.org/1999/xhtml" />
+<link rel="stylesheet" type="text/css" href="https://i-msdn.sec.s-msft.com/Combined.css?resources=0:Header,0:HeaderFooterSprite,0:Header.NonMtps;/Areas/Centers/Themes/StandardDevCenter/Content:0&amp;amp;v=3C7B146E4D24AB77A9D9006DC4F48F98" xmlns="http://www.w3.org/1999/xhtml" />
+<link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+<link rel="stylesheet" type="text/css" href="https://i-msdn.sec.s-msft.com/Combined.css?resources=0:Footer,0:HeaderFooterSprite,0:Footer.NonMtps,1:NewFooterSock,1:LinkList;/Areas/Centers/Themes/StandardDevCenter/Content:0,/Areas/Epx/Themes/Base/Content:1&amp;amp;v=1070D4FA49BFA3C2DA44B1CB75FED7A7" xmlns="http://www.w3.org/1999/xhtml" />
+<link type="text/css" rel="stylesheet" xmlns="http://www.w3.org/1999/xhtml" />
+
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Node-MongoDB-Mongoose</title>
+        <link href="description/Galleries.css" type="text/css" rel="Stylesheet" /><link href="description/Layout.css" type="text/css" rel="Stylesheet" /><link href="description/Brand.css" type="text/css" rel="Stylesheet" />
+        <link href="https://i1.code.msdn.s-msft.com/content/common/iframedescription.css" rel="Stylesheet" type="text/css" />
+        <script src="https://i1.code.msdn.s-msft.com/content/common/offline.js" type="text/javascript"></script>
+        <style type="text/css">
+            #projectInfo {
+                overflow: auto;
+            }
+            #longDesc {
+                clear:both;
+                margin: 25px 0 10px 0;
+            }
+
+            #SampleIndexList{
+                margin-left: 15px;
+            }
+        </style>
+    </head>
+<body>
+    <div id="offlineDescription">
+        <h1>Node-MongoDB-Mongoose</h1>
+        <br/>
+        <div id="projectInfo">
+            <div class="section">
+                    <div class="itemBarLong tagsContainer">
+                        <label for="Technologies">Technologies</label>
+                        <div id="Technologies">
+                            MongoDB, Node.js, mongoose
+                        </div>
+                    </div>
+                    <div class="itemBarLong tagsContainer">
+                        <label for="Topics">Topics</label>
+                        <div id="Topics">
+                            MongoDB, Node.js, mongoose
+                        </div>
+                    </div>
+                <div class="itemBarLong">
+                    <label for="Platforms">Platforms</label>
+                    <div id="Platforms">
+                        Web, Data
+                    </div>
+                </div>
+                <div class="itemBarLong">
+                    <label for="Requirements">Requirements</label>
+                    <div id="Requirements">
+                        
+                    </div>
+                </div>
+                <div class="itemBar">
+                    <label for="LastUpdated">Primary language</label>
+                    <div id="LastUpdated">en-US</div>
+                </div>
+                <div class="itemBar">
+                    <label for="LastUpdated">Updated</label>
+                    <div id="LastUpdated">12/3/2017</div>
+                </div>
+                <div class="itemBarLong">
+                    <label for="License">License</label>
+                    <div id="License">
+                        <a href="license.rtf">MIT</a></div>
+                </div>
+                <div class="itemBar">
+                    <div class="viewonlinecont">
+                        <a data-link="online" href="https://code.msdn.microsoft.com/Node-MongoDB-Mongoose-40fc3ad4">View this sample online</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+                   
+<script type="text/javascript">
+    function initializePage() {
+        var otherTabClass = 'otherTab';
+        var hiddenPreClass = 'hidden';
+
+        var htmlDecode = function(encodedData) {
+            var decodedData = "";
+            if (encodedData) {
+                var div = document.createElement('div');
+                div.innerHTML = encodedData;
+                decodedData = div.firstChild.nodeValue.replace( /\\r\\n/ig , '\r\n');
+            }
+            return decodedData;
+        };
+                
+        Galleries.iterateElem(Galleries.findElem(null, 'div', 'scriptcode'), function (index, scriptBlock) {
+            var titleElem = Galleries.findElem(scriptBlock, 'div', 'title')[0];
+            var labelElems = Galleries.findElem(titleElem, 'span');
+            if (labelElems.length == 0) {
+                labelElems = titleElem;
+            }
+            var languageSpans = Galleries.findElem(scriptBlock, 'span', 'hidden');
+            var pres = Galleries.findElem(scriptBlock, 'pre');
+            if (languageSpans.length > 0 && pres.length > 1) {
+                Galleries.iterateElem(labelElems, function(index, elem) {
+                    var codePre = pres[index];
+                    var labelSpan = elem;
+                    var languageSpan = languageSpans[index];
+                            
+                    elem.code = codePre.innerHTML.replace( /(\r(\n)?)|((\r)?\n)/ig , '\\r\\n');
+                            
+                    codePre.className = codePre.className.replace(hiddenPreClass, '');
+                            
+                    languageSpan.parentNode.removeChild(languageSpan);
+                });
+
+                pres = Galleries.findElem(scriptBlock, 'pre');
+                Galleries.iterateElem(labelElems, function(index, elem) {
+                    var codePre = pres[index];
+                    var labelSpan = elem;
+                    if (index == 0) {
+                        scriptBlock.activeTab = 0;
+                    }
+                    else {
+                        labelSpan.className += otherTabClass;
+                        codePre.className += hiddenPreClass;
+                    }
+                    Galleries.attachEventHandler(labelSpan, 'click', function(e) {
+                        var activeTab = scriptBlock.activeTab;
+                        labelElems[activeTab].className += otherTabClass;
+                        pres[activeTab].className += hiddenPreClass;
+
+                        codePre.className = codePre.className.replace(hiddenPreClass, '');
+                        labelSpan.className = labelSpan.className.replace(otherTabClass, '');
+                        scriptBlock.activeTab = index;
+                    });
+                });
+
+                var preview = Galleries.findElem(scriptBlock, 'div', 'preview');
+                if (preview.length == 0) {
+                    preview.push(pres[pres.length - 1]);
+                }
+                Galleries.iterateElem(preview, function(index, elem) {
+                    elem.parentNode.removeChild(elem);
+                });
+
+                if (window.clipboardData && clipboardData.setData) {
+                    var copyLink = document.createElement('a');
+                    copyLink.href = 'javascript:void(0);';
+                    copyLink.className = 'copyCode';
+                    copyLink.innerHTML = 'Copy code';
+                    Galleries.attachEventHandler(copyLink, 'click', function (e) {
+                        clipboardData.setData("Text", htmlDecode(labelElems[scriptBlock.activeTab].code));
+                        return false;
+                    });
+                    scriptBlock.insertBefore(copyLink, scriptBlock.childNodes[0]);
+                }
+            }
+        });
+    }
+
+    Galleries.onWindowLoad(function(){
+        initializePage();
+    });
+
+</script>
+<div id="longDesc">
+    
+<div class="fx-toc x_x_fx-toc-id-12589">
+<h2 class="fx-toc-title">Table of contents</h2>
+<ul class="fx-toc-list x_x_level-1">
+<li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#introduction">Introduction</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#why-mongodb">Why MongoDB?</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#source-code">Source Code</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#background">Background</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#setting-up-node-application">Setting up Node application</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#getting-the-required-packages">Getting the required packages</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#creating-the-node-app">Creating the Node App</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#setting-up-database">Setting up database</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#creating-a-mongoose-model">Creating a Mongoose model</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#setup-the-data">Setup the data</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#inserting-the-data-into-mongodb">Inserting the data into MongoDB</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#verify-the-data">Verify the data</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#todo">Todo</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#conclusion">Conclusion</a>
+</li><li><a href="http://sibeeshpassion.com/using-mongodb-on-node-js-application-using-mongoose/#your-turn-what-do-you-think">Your turn. What do you think?</a>
+</li></ul>
+</div>
+<h3><span id="introduction">Introduction</span></h3>
+<p>In this post, we are going to see how we can use a&nbsp;<a href="http://sibeeshpassion.com/category/MongoDB">MongoDB</a>&nbsp;on our Node JS application with the help of the package Mongoose. We will also be covering some facts about MongoDB so that as a
+ reader, you will understand why we had chosen MongoDB as our backend. We will be going through some steps to install the required packages using a node package manager terminal, so please be with me. At the end of this article, I guarantee that you will be
+ proficient on how to connect a MongoDB in our Node JS application. I hope you will like this article.</p>
+<h3><span id="why-mongodb">Why MongoDB?</span></h3>
+<p>Here, I am going to list down the reasons why I had chosen MongoDB.</p>
+<ol>
+<li>MongoDB is a NoSQL database when I say NoSQL, it means that it doesn&rsquo;t have any structure to be followed.
+</li><li>There are no relationships, we can perform the relation using separate packages like Mongoose
+</li><li>Everything is JSON, even the data and collections are stored as JSON </li><li>Since the data is stored as JSON, no more conversions are needed. We can directly use it in our application.
+</li></ol>
+<h3>Background</h3>
+<p>Node JS has become a trend now, thus some most used databases. One of the recommended database for a Node application is MongoDB. As we discussed a MongoDB doesn&rsquo;t have any structure inbuilt, here we are going to use a package called Mongoose, with
+ that we can create some structure for our Database.&nbsp;Let&rsquo;s just skip the talking and start developing.</p>
+<h3><span id="setting-up-node-application">Setting up Node application</span></h3>
+<p>To get started with the Node JS, create a folder and name as per your wish, this is going to be our project directory. Here I am going to use one of my favorite editor, Visual Studio Code. Now please point to your project container, and run the command below.</p>
+<div class="EnlighterJSWrapper enlighterEnlighterJSWrapper">
+<ol class="hoverEnabled enlighterEnlighterJS EnlighterJS">
+<li class="odd"><span>npm init</span> </li></ol>
+</div>
+<div class="wp-caption x_x_alignnone" id="attachment_12591"><a href="https://code.msdn.microsoft.com/Node-MongoDB-Mongoose-40fc3ad4/description/NPM-Init.png"><img class="size-full x_x_wp-image-12591" src="https://code.msdn.microsoft.com/Node-MongoDB-Mongoose-40fc3ad4/description/NPM-Init.png" alt="NPM Init" width="634" height="449"></a>
+<p class="wp-caption-text">NPM Init</p>
+</div>
+<p>This will create a file named &ldquo;Package.json&rdquo; in your directory. We will be adding all of our dependencies in this file very soon. The command may ask you some default questions which you need to&nbsp;answer. If you need to create the package.json
+ file with default values in it, you may consider running the below command.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">npm init --yes</pre>
+<div class="preview">
+<pre class="js">npm&nbsp;init&nbsp;--yes</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;</div>
+<p>&nbsp;</p>
+<p>Let&rsquo;s review our package.json file.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">{ 
+&quot;name&quot;: &quot;node-mongodb-mongoose&quot;,
+&quot;version&quot;: &quot;1.0.0&quot;,
+&quot;description&quot;: &quot;A Node application with MongoDB and Mongoose&quot;,
+&quot;main&quot;: &quot;index.js&quot;,
+&quot;scripts&quot;: {
+&quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;
+},
+&quot;keywords&quot;: [
+&quot;Node&quot;,
+&quot;Mongoose&quot;,
+&quot;MongoDB&quot;
+],
+&quot;author&quot;: &quot;Sibeesh Venu&quot;,
+&quot;license&quot;: &quot;ISC&quot;
+}</pre>
+<div class="preview">
+<pre class="js"><span class="js__brace">{</span>&nbsp;&nbsp;
+<span class="js__string">&quot;name&quot;</span>:&nbsp;<span class="js__string">&quot;node-mongodb-mongoose&quot;</span>,&nbsp;
+<span class="js__string">&quot;version&quot;</span>:&nbsp;<span class="js__string">&quot;1.0.0&quot;</span>,&nbsp;
+<span class="js__string">&quot;description&quot;</span>:&nbsp;<span class="js__string">&quot;A&nbsp;Node&nbsp;application&nbsp;with&nbsp;MongoDB&nbsp;and&nbsp;Mongoose&quot;</span>,&nbsp;
+<span class="js__string">&quot;main&quot;</span>:&nbsp;<span class="js__string">&quot;index.js&quot;</span>,&nbsp;
+<span class="js__string">&quot;scripts&quot;</span>:&nbsp;<span class="js__brace">{</span>&nbsp;
+<span class="js__string">&quot;test&quot;</span>:&nbsp;<span class="js__string">&quot;echo&nbsp;\&quot;Error:&nbsp;no&nbsp;test&nbsp;specified\&quot;&nbsp;&amp;&amp;&nbsp;exit&nbsp;1&quot;</span>&nbsp;
+<span class="js__brace">}</span>,&nbsp;
+<span class="js__string">&quot;keywords&quot;</span>:&nbsp;[&nbsp;
+<span class="js__string">&quot;Node&quot;</span>,&nbsp;
+<span class="js__string">&quot;Mongoose&quot;</span>,&nbsp;
+<span class="js__string">&quot;MongoDB&quot;</span>&nbsp;
+],&nbsp;
+<span class="js__string">&quot;author&quot;</span>:&nbsp;<span class="js__string">&quot;Sibeesh&nbsp;Venu&quot;</span>,&nbsp;
+<span class="js__string">&quot;license&quot;</span>:&nbsp;<span class="js__string">&quot;ISC&quot;</span>&nbsp;
+<span class="js__brace">}</span></pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;</div>
+<p>&nbsp;</p>
+<h3><span id="getting-the-required-packages">Getting the required packages</span></h3>
+<p>Now that we have the application ready, let&rsquo;s get the required packages ready.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">npm install --save mongoose</pre>
+<div class="preview">
+<pre class="js">npm&nbsp;install&nbsp;--save&nbsp;mongoose</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;This will create a new folder npm_modules on your project directory where you can see the package Mongoose in it.</div>
+<div class="endscriptcode">
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>PowerShell</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">powershell</span>
+<pre class="hidden">npm install --save express</pre>
+<div class="preview">
+<pre class="js">npm&nbsp;install&nbsp;--save&nbsp;express</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;The above command will add the package express to our application.</div>
+</div>
+<p>&nbsp;</p>
+<h3><span id="creating-the-node-app">Creating the Node App</span></h3>
+<p>Now we can create our server.js file where we are going to write most of our application code.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">var express = require(&quot;express&quot;)
+var app = express()
+app.listen(&quot;3010&quot;,()=&gt;{
+console.log(&quot;I just started listening!.&quot;)
+})</pre>
+<div class="preview">
+<pre class="js"><span class="js__statement">var</span>&nbsp;express&nbsp;=&nbsp;require(<span class="js__string">&quot;express&quot;</span>)&nbsp;
+<span class="js__statement">var</span>&nbsp;app&nbsp;=&nbsp;express()&nbsp;
+app.listen(<span class="js__string">&quot;3010&quot;</span>,()=&gt;<span class="js__brace">{</span>&nbsp;
+console.log(<span class="js__string">&quot;I&nbsp;just&nbsp;started&nbsp;listening!.&quot;</span>)&nbsp;
+<span class="js__brace">}</span>)</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;Now run the command&nbsp;<span class="enlighterEnlighterJS EnlighterJS">node server.js</span>and make sure that you are getting a console as &rdquo; I just started listening!.&rdquo;.</div>
+<p>&nbsp;</p>
+<p>If you are getting an error as preceding, please make sure that you are running the application on an unused port.</p>
+<blockquote>
+<p>PS F:\Visual Studio\Node.JS\Node-MongoDB-Mongoose&gt; node server.js<br>
+events.js:136<br>
+throw er; // Unhandled &lsquo;error&rsquo; event<br>
+^</p>
+<p>Error: listen EADDRINUSE :::3000<br>
+at Object._errnoException (util.js:1031:13)<br>
+at _exceptionWithHostPort (util.js:1052:20)<br>
+at Server.setupListenHandle [as _listen2] (net.js:1367:14)<br>
+at listenInCluster (net.js:1408:12)<br>
+at Server.listen (net.js:1496:7)<br>
+at Function.listen (F:\Visual Studio\Node.JS\Node-MongoDB-Mongoose\node_modules\express\lib\application.js:618:24)<br>
+at Object.&lt;anonymous&gt; (F:\Visual Studio\Node.JS\Node-MongoDB-Mongoose\server.js:3:5)<br>
+at Module._compile (module.js:641:30)<br>
+at Object.Module._extensions..js (module.js:652:10)<br>
+at Module.load (module.js:560:32)&rdquo;</p>
+</blockquote>
+<h3><span id="setting-up-database">Setting up database</span></h3>
+<p>Now that we have our application ready, let&rsquo;s go and create our database. I am going to use mLab for creating the database. If you have not installed MongoDB on your machine, I strongly recommend creating a database in&nbsp;<a href="https://code.msdn.microsoft.com/Node-MongoDB-Mongoose-40fc3ad4/https://mlab.com/home">mLab.</a>&nbsp;I
+ had created a database there and have got my connection string as preceding.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">mongodb://&lt;dbuser&gt;:&lt;dbpassword&gt;@ds038319.mlab.com:38319/mylearning</pre>
+<div class="preview">
+<pre class="js">mongodb:<span class="js__sl_comment">//&lt;dbuser&gt;:&lt;dbpassword&gt;@ds038319.mlab.com:38319/mylearning</span></pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;We will be updating the connection string with actual DB user and password later. Please make sure that you are creating a user for your DB and remember the password.</div>
+<p>&nbsp;</p>
+<h3><span id="creating-a-mongoose-model">Creating a Mongoose model</span></h3>
+<p>Let&rsquo;s create a Mongoose model and set up our connection string now, which is going to be our collection. No worries, it is just a&nbsp;<a href="http://sibeeshpassion.com/category/JavaScript">JavaScript</a>&nbsp;model.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">var conString = &quot;mongodb://admin:admin@ds038319.mlab.com:38319/mylearning&quot;
+/**
+* Models
+*/
+var User = mongoose.model(&quot;User&quot;, {
+firstName: String,
+lastName: String
+})</pre>
+<div class="preview">
+<pre class="js"><span class="js__statement">var</span>&nbsp;conString&nbsp;=&nbsp;<span class="js__string">&quot;mongodb://admin:admin@ds038319.mlab.com:38319/mylearning&quot;</span>&nbsp;
+<span class="js__ml_comment">/**&nbsp;
+*&nbsp;Models&nbsp;
+*/</span>&nbsp;
+<span class="js__statement">var</span>&nbsp;User&nbsp;=&nbsp;mongoose.model(<span class="js__string">&quot;User&quot;</span>,&nbsp;<span class="js__brace">{</span>&nbsp;
+firstName:&nbsp;<span class="js__object">String</span>,&nbsp;
+lastName:&nbsp;<span class="js__object">String</span>&nbsp;
+<span class="js__brace">}</span>)</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;Please be noted that, when you move the codes to production, make sure that your password and user fields on the connection string are separated from this file and encrypted</div>
+<p>&nbsp;</p>
+<p>Now let&rsquo;s connect our database.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">mongoose.connect(conString, { useMongoClient: true }, () =&gt; {
+console.log(&quot;DB is connected&quot;)
+})</pre>
+<div class="preview">
+<pre class="js">mongoose.connect(conString,&nbsp;<span class="js__brace">{</span>&nbsp;useMongoClient:&nbsp;true&nbsp;<span class="js__brace">}</span>,&nbsp;()&nbsp;=&gt;&nbsp;<span class="js__brace">{</span>&nbsp;
+console.log(<span class="js__string">&quot;DB&nbsp;is&nbsp;connected&quot;</span>)&nbsp;
+<span class="js__brace">}</span>)</pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;</div>
+<p>&nbsp;</p>
+<h3><span id="setup-the-data">Setup the data</span></h3>
+<p>We have our model ready, what else is needed now? Yes, you are right, we need data.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">var dummyUser = {
+firstName: &quot;Sibeesh&quot;,
+lastName: &quot;Venu&quot;
+}</pre>
+<div class="preview">
+<pre class="js"><span class="js__statement">var</span>&nbsp;dummyUser&nbsp;=&nbsp;<span class="js__brace">{</span>&nbsp;
+firstName:&nbsp;<span class="js__string">&quot;Sibeesh&quot;</span>,&nbsp;
+lastName:&nbsp;<span class="js__string">&quot;Venu&quot;</span>&nbsp;
+<span class="js__brace">}</span></pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;</div>
+<p>&nbsp;</p>
+<h3><span id="inserting-the-data-into-mongodb">Inserting the data into MongoDB</span></h3>
+<p>We have got everything ready, we can insert the model now. Let&rsquo;s do the saving logic now.</p>
+<p>&nbsp;</p>
+<div class="scriptcode">
+<div class="pluginEditHolder" pluginCommand="mceScriptCode">
+<div class="title"><span>JavaScript</span></div>
+<div class="pluginLinkHolder"><span class="pluginEditHolderLink">Edit</span>|<span class="pluginRemoveHolderLink">Remove</span></div>
+<span class="hidden">js</span>
+<pre class="hidden">mongoose.connect(conString, { useMongoClient: true }, () =&gt; {
+console.log(&quot;DB is connected&quot;)
+saveData()
+})
+function saveData() {
+var user = new User(dummyUser);
+user.save();
+}</pre>
+<div class="preview">
+<pre class="js">mongoose.connect(conString,&nbsp;<span class="js__brace">{</span>&nbsp;useMongoClient:&nbsp;true&nbsp;<span class="js__brace">}</span>,&nbsp;()&nbsp;=&gt;&nbsp;<span class="js__brace">{</span>&nbsp;
+console.log(<span class="js__string">&quot;DB&nbsp;is&nbsp;connected&quot;</span>)&nbsp;
+saveData()&nbsp;
+<span class="js__brace">}</span>)&nbsp;
+<span class="js__operator">function</span>&nbsp;saveData()&nbsp;<span class="js__brace">{</span>&nbsp;
+<span class="js__statement">var</span>&nbsp;user&nbsp;=&nbsp;<span class="js__operator">new</span>&nbsp;User(dummyUser);&nbsp;
+user.save();&nbsp;
+<span class="js__brace">}</span></pre>
+</div>
+</div>
+</div>
+<div class="endscriptcode">&nbsp;</div>
+<br>
+<p>&nbsp;</p>
+<div class="EnlighterJSWrapper enlighterEnlighterJSWrapper"></div>
+<h3><span id="verify-the-data">Verify the data</span></h3>
+<p>Once you run your application, go to your database and check for the entries there. I am sure there will be a new collection &ldquo;User&rdquo; and our inserted data. As I am using mLab database, here is how my data saved.</p>
+<div class="wp-caption x_x_alignnone" id="attachment_12590"><a href="https://code.msdn.microsoft.com/Node-MongoDB-Mongoose-40fc3ad4/description/MongoDB-Data-Insertion.png"><img class="size-full x_x_wp-image-12590" src="https://code.msdn.microsoft.com/Node-MongoDB-Mongoose-40fc3ad4/description/MongoDB-Data-Insertion.png" alt="MongoDB Data Insertion" width="634" height="420"></a>
+<p class="wp-caption-text">MongoDB Data Insertion</p>
+</div>
+<p>If you have noticed, you can see there are an another property names &ldquo;_id&rdquo; in our database collection. This is a unique id generated by MongoDB for us, so no need to think about it.</p>
+<h3><span id="todo"><em>Todo</em></span></h3>
+<p>As the purpose of this article is to show how we can insert a data to MongoDB, I called the save method right after the database is connected. In our real life, this is not a recommended way. You must create an Ajax post request and handle the same. I am
+ leaving that task to you. Please try to do that and let me know. I would love to hear back from you.</p>
+<h3><span id="conclusion">Conclusion</span></h3>
+<p>Thanks a lot for reading. Did I miss anything that you may think which is needed? Could you find this post as useful? I hope you liked this article. Please share me your valuable suggestions and feedback.</p>
+
+</div>
+
+
+    </div>
+</body>
+</html>

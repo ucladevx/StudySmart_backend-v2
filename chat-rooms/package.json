@@ -1,0 +1,22 @@
+{
+  "name": "chat-rooms",
+  "version": "1.0.0",
+  "description": "A Node applicaiton with MongoDB and Mongoose",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "Node",
+    "Mongoose",
+    "MongoDB"
+  ],
+  "author": "Brendon Ng",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "mongoose": "^5.3.12",
+    "socket.io": "^2.1.1"
+  }
+}
