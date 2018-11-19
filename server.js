@@ -13,6 +13,7 @@ User Table:
 	classes: [{
 		_id: (primary key of class in the class table)
 		name: (name of class)
+		notifications: (on/off)
 	}]
 	testPoints: (number of points for test bank)
 }
@@ -44,14 +45,22 @@ Class Table:
 	chatMessages: {[
 		time: (time when message was sent)
 		text: (actual content)
+		byUser: (_id of user)
 	]}
 }
+
+
+
 
 
 Location Table:
 
 {
 	_id: 
+	type: (library/study room/special)
+	mapCoords: (not sure how to implement)
+	activityLevel: (not sure how to measure)
+
 }
 
 */
