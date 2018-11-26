@@ -1,15 +1,17 @@
 {
   "name": "chat-rooms",
   "version": "1.0.0",
-  "description": "A Node applicaiton with MongoDB and Mongoose",
+  "description": "A chat application in Node JS, which uses MongoDB, Mongoose and Socket.io",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "Node",
+    "JS",
     "Mongoose",
-    "MongoDB"
+    "MongoDB",
+    "Socket.io"
   ],
   "author": "Brendon Ng",
   "license": "ISC",
