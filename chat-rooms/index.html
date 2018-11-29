@@ -23,6 +23,16 @@
 <script>
     var socket = io()
     socket.on("chat", addChat)
+    $(() => {
+        getChats()
+
+        $("#send").click(() => {
+            var chatMessage = {
+                name: $("#txtName").val(), chat: $("#txtMessage").val()
+            }
+            postChat(chatMessage)
+        })
+    })
 
     function postChat(chat) {
         $.post("http://localhost:3020/chats", chat)
@@ -36,7 +46,7 @@
 
     function addChat(chatObj){
         $("#messages").append(`<h5>${chatObj.name} </h5><p>${chatObj.chat}</p>`);
-}
+    }
 
 </script>
 

@@ -1,8 +1,8 @@
 var express = require("express")
-var app = express()
 var mongoose = require('mongoose')
 var bodyParser = require("body-parser")
 
+var app = express()
 var http = require("http").Server(app)
 var io = require("socket.io")(http)
 
@@ -29,12 +29,13 @@ app.post("/chats", async (req, res) => {
 		var chat = new Chats(req.body)
 		await chat.save()
 		res.sendStatus(200)
+		//Emit the event
+		io.emit("chat", req.body)
 	} catch (error) {
 		res.sendStatus(500)
 		console.error(error)
 	}
 })
-
 
 app.get("/chats", (req, res) => {
     Chats.find({}, (error, chats) => {
@@ -47,34 +48,8 @@ io.on("connection", (socket) => {
 })
 
 var server = http.listen(3020, () => {
-	console.log("Now listening on ", server.address().port)
+	console.log("Now listening on ", server.address().port
+		)
 })
-
-
-
-
-
-var User = mongoose.model("User", {
-	firstName: String,
-	lastName: String
-})
-
-var dummyUser = {
-	firstName: "Dummy",
-	lastName: "User"
-}
-
-function saveData(){
-	var user = new User(dummyUser);
-	user.save();
-}
-
-
-
-
-
-
-
-
 
 
