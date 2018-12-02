@@ -1,7 +1,14 @@
 var express = require('express');
+var mongo = require('mongodb');
+var MongoClient = require('mongodb').MongoClient;
+var bodyParser = require('body-parser');
+
 
 var app = express();
 
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }));
 
 /*Temporary DB structure (feel free to add to prototypes)
 
@@ -65,6 +72,9 @@ Location Table:
 
 */
 
+
+var url = "mongodb://aseem:Secure123@ds123499.mlab.com:23499/studysmart";
+
 var origin = "https://google.com";
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', origin || "*");
@@ -74,5 +84,43 @@ app.use(function(req, res, next) {
 });
 
 app.get('/', function(req, res){
-	res.send("StudySmart");
+	MongoClient.connect(url, function(err, db) {
+		if (err) throw err;
+		console.log("Database connected");
+
+
+		db.close();
+		res.end("Nothing requested");
+	});
 })
+
+
+app.get('/user/:id', function(req, res) {
+
+	var socialId = req.params.id;
+
+	MongoClient.connect(url, function(err, db) {
+		if (err) throw err;
+		console.log("Database connected");
+		var o_id = new mongo.ObjectID(socialId);
+		var query = {_id: o_id}
+		var dbo = db.db("studysmart");
+		dbo.collection("user").find(query).toArray(function(err, result) {
+			if (err) throw err;
+			var resjson = result[0];
+
+			if(result.length == 0){
+				db.close();
+				res.write("No user found.");
+			}
+
+			db.close();
+			res.json(resjson);
+		});
+
+		
+	});
+
+})
+
+app.listen(process.env.PORT || 3000);
