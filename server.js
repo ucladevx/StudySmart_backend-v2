@@ -83,6 +83,7 @@ app.use(function(req, res, next) {
     next();
 });
 
+/*
 app.get('/', function(req, res){
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
@@ -93,6 +94,7 @@ app.get('/', function(req, res){
 		res.end("Nothing requested");
 	});
 })
+*/
 
 
 app.get('/user/:id', function(req, res) {
@@ -123,4 +125,59 @@ app.get('/user/:id', function(req, res) {
 
 })
 
-app.listen(process.env.PORT || 3000);
+
+////////////////////
+/// Chat Rooms /////
+////////////////////
+
+var mongoose = require('mongoose')
+var http = require("http").Server(app)
+var io = require("socket.io")(http)
+
+var conString = "mongodb://brendon:sandbox1@ds211724.mlab.com:11724/studysmart-sandbox"
+app.use(express.static(__dirname))
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }))
+
+mongoose.Promise = Promise
+
+var Chats = mongoose.model("Chats", {
+	name: String,
+	chat: String
+})
+
+mongoose.connect(conString, { useMongoClient: true}, (err) => {
+	console.log("DB is connected", err)
+})
+
+app.post("/chats", async (req, res) => {
+	try{
+		var chat = new Chats(req.body)
+		await chat.save()
+		res.sendStatus(200)
+		//Emit the event
+		io.emit("chat", req.body)
+	} catch (error) {
+		res.sendStatus(500)
+		console.error(error)
+	}
+})
+
+app.get("/chats", (req, res) => {
+    Chats.find({}, (error, chats) => {
+        res.send(chats)
+    })
+})
+
+io.on("connection", (socket) => {
+	console.log("Socket is connected...")
+})
+
+
+var server = http.listen(3000, () => {
+	console.log("Now listening on ", server.address().port
+		)
+})
+
+
+//app.listen(process.env.PORT || 3000);
