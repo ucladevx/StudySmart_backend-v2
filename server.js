@@ -144,8 +144,24 @@ app.post('/user/:id', function(req, res) {
 			var resjson = result[0];
 
 			if(result.length == 0){
-				db.close();
-				res.write("No user found.");
+				var newUser = {
+					_id: userId,
+					socialId: socialId,
+					classes: [],
+					testPoints: 0
+				}
+
+				dbo.collection("user").insertOneAndUpdate(newUser, function(err, result) {
+					if (err) throw err;
+					var resjson = {
+						error: false,
+						newUser: true,
+						id: result.value._id
+					}
+
+					db.close();
+					res.json(resjson);
+				});
 			}
 			else{
 				var toupdate = {$set: {socialId: socialId}};
