@@ -72,6 +72,7 @@ Location Table:
 
 var url = "mongodb://aseem:Secure123@ds123499.mlab.com:23499/studysmart";
 var CLIENT_ID = "THE APP'S CLIENT ID HERE";
+const client = new OAuth2Client(CLIENT_ID);
 
 var origin = "https://google.com";
 app.use(function(req, res, next) {
