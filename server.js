@@ -129,8 +129,15 @@ app.post('/user/:id', function(req, res) {
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		console.log("Database connected");
-		var o_id = new mongo.ObjectID(socialId);
-		var query = {_id: o_id}
+		const ticket = await client.verifyIdToken({
+			idToken: socialId,
+			audience: CLIENT_ID,
+		}).catch(err => { console.log(err); });
+		//const payload = ticket.getPayload();
+		//const userid = payload['sub'];
+
+		//var o_id = new mongo.ObjectID(socialId);
+		var query = {_id: userId}
 		var dbo = db.db("studysmart");
 		dbo.collection("user").find(query).toArray(function(err, result) {
 			if (err) throw err;
@@ -140,9 +147,21 @@ app.post('/user/:id', function(req, res) {
 				db.close();
 				res.write("No user found.");
 			}
+			else{
+				var toupdate = {$set: {socialId: socialId}};
+				dbo.collection("user").findOneAndUpdate(query, toupdate, function(err, result) {
+					if (err) throw err;
+					var resjson = {
+						error: false,
+						newUser: false,
+						id: result.value._id
+					}
 
-			db.close();
-			res.json(resjson);
+					db.close();
+					res.json(resjson);
+				});
+			}
+
 		});
 	});
 })
