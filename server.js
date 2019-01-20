@@ -3,6 +3,7 @@ var mongo = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
 var {OAuth2Client} = require('google-auth-library');
+var io = require('socket.io-client');
 
 var app = express();
 
@@ -16,7 +17,7 @@ User Table:
 
 {
 	_id: (primary key on db, same as google id)
-	socialId: (possibly for google/fb integration)
+	socialId: (used for google/fb integration)
 	classes: [{
 		_id: (primary key of class in the class table)
 		name: (name of class)
@@ -26,21 +27,13 @@ User Table:
 }
 
 
-SocialId Table:
-
-{
-	socialId: (primary key for table, ids for google/fb authorization)
-	userId: (user id, found as _id in the user table)
-}
-
-
 //Chat could be implemented used Socket.io, which emits events to those who are connected, and stores messages in a database intermittently
 
 Class Table:
 
 {
 	_id: (primary key in db)
-	name: (name of class)
+	name: (name of class, MongoDB index exists for this field)
 	schedule: [{
 		day: 
 		startTime:
@@ -50,13 +43,20 @@ Class Table:
 	users: [{
 		_id: (primary key of each user in the class)
 	}]
+	chatMessages: (id of class chat)
+}
+
+
+Class chat:
+
+{
+	_id: 
 	chatMessages: {[
 		time: (time when message was sent)
 		text: (actual content)
 		byUser: (_id of user)
 	]}
 }
-
 
 Location Table:
 
@@ -95,15 +95,18 @@ app.get('/', function(req, res){
 })
 
 
+
+//USER SECTION
+
+//Get all user info
 app.get('/user/:id', function(req, res) {
 
-	var socialId = req.params.id;
+	var userId = req.params.id;
 
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		console.log("Database connected");
-		var o_id = new mongo.ObjectID(socialId);
-		var query = {_id: o_id}
+		var query = {_id: userId}
 		var dbo = db.db("studysmart");
 		dbo.collection("user").find(query).toArray(function(err, result) {
 			if (err) throw err;
@@ -182,6 +185,46 @@ app.post('/user/:id', function(req, res) {
 	});
 })
 
+
+
+//CLASSES SECTION
+
+//Get all class info, search by name or id
+app.get('/class', function(req, res) {
+
+})
+
+
+//Get class chat (or the last few messages). Start socket connection, and allow user to post chats
+app.get('/classchat/:id', function(req, res) {
+	
+})
+
+
+//Create a new class (and class chat), check if name conflict
+app.post('/class', function(req, res) {
+	
+})
+
+
+//LOCATIONS SECTION
+
+//Get locations, possibly all or some locations
+app.get('/locations', function(req, res) {
+
+})
+
+
+//Get location info
+app.get('/location/:id', function(req, res) {
+
+})
+
+
+//Post location info
+app.post('/location', function(req, res) {
+
+})
 
 
 app.listen(process.env.PORT || 3000);
