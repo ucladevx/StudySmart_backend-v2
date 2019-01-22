@@ -70,7 +70,7 @@ Location Table:
 */
 
 
-var url = "mongodb://aseem:Secure123@ds123499.mlab.com:23499/studysmart";
+var url = "mongodb://studysmart:Ucladevx@docdb-2019-01-22-02-17-38.cluster-cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017/?ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0";
 var CLIENT_ID = "THE APP'S CLIENT ID HERE";
 const client = new OAuth2Client(CLIENT_ID);
 
