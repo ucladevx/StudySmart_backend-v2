@@ -135,7 +135,17 @@ app.post('/user/:id', function(req, res) {
 		const ticket = await client.verifyIdToken({
 			idToken: socialId,
 			audience: CLIENT_ID,
-		}).catch(err => { console.log(err); });
+		}).catch(err => { 
+			console.log(err); 
+			var resjson = {
+				error: true,
+				newUser: true,
+				id: null
+			}
+
+			db.close();
+			res.json(resjson);
+		});
 		//const payload = ticket.getPayload();
 		//const userid = payload['sub'];
 
