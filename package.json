@@ -18,8 +18,11 @@
   },
   "homepage": "https://github.com/aseem191/backend-v2#readme",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express.js": "^1.0.0",
-    "google-auth-library": "^2.0.2"
+    "google-auth-library": "^2.0.2",
+    "mongodb": "^3.1.13",
+    "socket.io-client": "^2.2.0"
   }
 }
