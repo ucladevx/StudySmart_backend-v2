@@ -95,7 +95,7 @@ app.get('/', function(req, res){
 })
 
 
-
+/*
 //USER SECTION
 
 //Get all user info
@@ -132,7 +132,7 @@ app.post('/user/:id', function(req, res) {
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		console.log("Database connected");
-		const ticket = await client.verifyIdToken({
+		/*const ticket = await client.verifyIdToken({
 			idToken: socialId,
 			audience: CLIENT_ID,
 		}).catch(err => { 
@@ -145,12 +145,12 @@ app.post('/user/:id', function(req, res) {
 
 			db.close();
 			res.json(resjson);
-		});
+		});*/
 		//const payload = ticket.getPayload();
 		//const userid = payload['sub'];
 
 		//var o_id = new mongo.ObjectID(socialId);
-		var query = {_id: userId}
+/*		var query = {_id: userId}
 		var dbo = db.db("studysmart");
 		dbo.collection("user").find(query).toArray(function(err, result) {
 			if (err) throw err;
@@ -234,7 +234,7 @@ app.get('/location/:id', function(req, res) {
 //Post location info
 app.post('/location', function(req, res) {
 
-})
+})*/
 
 
 app.listen(process.env.PORT || 3000);
