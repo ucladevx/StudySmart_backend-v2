@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 /*Temporary DB structure (feel free to add to prototypes)
 
-User Table:
+user Collection:
 
 {
 	_id: (primary key on db, same as google id)
@@ -29,7 +29,7 @@ User Table:
 
 //Chat could be implemented used Socket.io, which emits events to those who are connected, and stores messages in a database intermittently
 
-Class Table:
+class Collection:
 
 {
 	_id: (primary key in db)
@@ -47,7 +47,7 @@ Class Table:
 }
 
 
-Class chat:
+classChat Collection:
 
 {
 	_id: 
@@ -58,7 +58,7 @@ Class chat:
 	]}
 }
 
-Location Table:
+location Collection:
 
 {
 	_id: 
@@ -70,7 +70,7 @@ Location Table:
 */
 
 
-var url = "mongodb://studysmart:Ucladevx@docdb-2019-02-03-09-55-38.cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017";
+var url = "mongodb://studysmart:Ucladevx@docdb-2019-02-03-09-55-38.cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017/";
 var CLIENT_ID = "THE APP'S CLIENT ID HERE";
 const client = new OAuth2Client(CLIENT_ID);
 
@@ -84,13 +84,13 @@ app.use(function(req, res, next) {
 
 
 app.get('/', function(req, res){
-	MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		console.log("Database connected");
 
 
 		db.close();
-		res.send("Nothing requested");
+		res.send("Database connected, nothing requested");
 	});
 })
 
