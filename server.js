@@ -58,6 +58,7 @@ classChat Collection:
 	]}
 }
 
+
 location Collection:
 
 {
@@ -71,8 +72,8 @@ location Collection:
 
 
 var url = "mongodb://studysmart:Ucladevx@docdb-2019-02-03-09-55-38.cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017/";
-var CLIENT_ID = "THE APP'S CLIENT ID HERE";
-const client = new OAuth2Client(CLIENT_ID);
+var CLIENT_ID = "373351297766-5f4knsqmvuu540bl3oh24i6qu2uh4lif.apps.googleusercontent.com";
+const oauthClient = new OAuth2Client(CLIENT_ID);
 
 var origin = "https://google.com";
 app.use(function(req, res, next) {
@@ -95,105 +96,151 @@ app.get('/', function(req, res){
 })
 
 
-/*
+
 //USER SECTION
 
 //Get all user info
 app.get('/user/:id', function(req, res) {
-
-	var userId = req.params.id;
+	//var userId = req.params.id;
+	var socialId = req.params.socialId;
 
 	MongoClient.connect(url, function(err, db) {
 		if (err) throw err;
 		console.log("Database connected");
-		var query = {_id: userId}
-		var dbo = db.db("studysmart");
-		dbo.collection("user").find(query).toArray(function(err, result) {
-			if (err) throw err;
-			var resjson = result[0];
 
-			if(result.length == 0){
+
+		const verifyToken = new Promise(function(resolve, reject){
+			client.verifyIdToken(
+				socialId,
+				CLIENT_ID,
+				function (e, login){
+					if (login) {
+						var payload = login.getPayload();
+						var googleId = payload['sub'];
+						resolve(googleId);
+					} else {
+						reject("invalid token");
+					}
+				}
+			)
+		})
+
+		verifyToken.then(function(userId){
+			var query = {_id: userId}
+			var dbo = db.db("studysmart");
+			dbo.collection("user").find(query).toArray(function(err, result) {
+				if (err) throw err;
+				var resjson = result[0];
+
+				if(result.length == 0){
+					db.close();
+					var errjson = {
+						error: "No user found",
+						newUser: false,
+						id: null
+					}
+					res.json(errjson);
+				}
+
 				db.close();
-				res.write("No user found.");
-			}
-
-			db.close();
-			res.json(resjson);
-		});
-	});
-})
-
-
-//Use this for sign in
-app.post('/user/:id', function(req, res) {
-	var userId = req.params.id;
-	var socialId = req.body.socialId;
-
-	MongoClient.connect(url, function(err, db) {
-		if (err) throw err;
-		console.log("Database connected");
-		/*const ticket = await client.verifyIdToken({
-			idToken: socialId,
-			audience: CLIENT_ID,
-		}).catch(err => { 
-			console.log(err); 
+				res.json(resjson);
+			});
+		}).catch(function(err){
+			console.log(err);
 			var resjson = {
-				error: true,
-				newUser: true,
+				error: "Authentication error",
+				newUser: false,
 				id: null
 			}
 
 			db.close();
 			res.json(resjson);
-		});*/
-		//const payload = ticket.getPayload();
-		//const userid = payload['sub'];
-
-		//var o_id = new mongo.ObjectID(socialId);
-/*		var query = {_id: userId}
-		var dbo = db.db("studysmart");
-		dbo.collection("user").find(query).toArray(function(err, result) {
-			if (err) throw err;
-			var resjson = result[0];
-
-			if(result.length == 0){
-				var newUser = {
-					_id: userId,
-					socialId: socialId,
-					classes: [],
-					testPoints: 0
-				}
-
-				dbo.collection("user").insertOneAndUpdate(newUser, function(err, result) {
-					if (err) throw err;
-					var resjson = {
-						error: false,
-						newUser: true,
-						id: result.value._id
-					}
-
-					db.close();
-					res.json(resjson);
-				});
-			}
-			else{
-				var toupdate = {$set: {socialId: socialId}};
-				dbo.collection("user").findOneAndUpdate(query, toupdate, function(err, result) {
-					if (err) throw err;
-					var resjson = {
-						error: false,
-						newUser: false,
-						id: result.value._id
-					}
-
-					db.close();
-					res.json(resjson);
-				});
-			}
-
 		});
 	});
-})
+});
+
+
+//Use this for sign in
+app.post('/user/:id', function(req, res) {
+	//var userId = req.params.id;
+	var socialId = req.params.socialId;
+
+	MongoClient.connect(url, function(err, db) {
+		if (err) throw err;
+		console.log("Database connected");
+
+		const verifyToken = new Promise(function(resolve, reject){
+			client.verifyIdToken(
+				socialId,
+				CLIENT_ID,
+				function (e, login){
+					if (login) {
+						var payload = login.getPayload();
+						var googleId = payload['sub'];
+						resolve(googleId);
+					} else {
+						reject("invalid token");
+					}
+				}
+			)
+		})
+
+		verifyToken.then(function(userId){
+			var query = {_id: userId};
+			var dbo = db.db("studysmart");
+			dbo.collection("user").find(query).toArray(function(err, result) {
+				if (err) throw err;
+				var resjson = result[0];
+
+				if(result.length == 0){
+					var newUser = {
+						_id: userId,
+						socialId: socialId,
+						classes: [],
+						testPoints: 0
+					}
+
+					dbo.collection("user").insertOneAndUpdate(newUser, function(err, result) {
+						if (err) throw err;
+						var resjson = {
+							error: null,
+							newUser: true,
+							id: result.value._id
+						}
+
+						db.close();
+						res.json(resjson);
+					});
+				}
+				else{
+					var toupdate = {$set: {socialId: socialId}};
+					dbo.collection("user").findOneAndUpdate(query, toupdate, function(err, result) {
+						if (err) throw err;
+						var resjson = {
+							error: null,
+							newUser: false,
+							id: result.value._id
+						}
+
+						db.close();
+						res.json(resjson);
+					});
+				}
+			});
+
+		}).catch(function(err){
+			console.log(err);
+			var resjson = {
+				error: "Authentication error",
+				newUser: false,
+				id: null
+			}
+
+			db.close();
+			res.json(resjson);
+		});
+	});
+});
 
 
 
@@ -202,19 +249,19 @@ app.post('/user/:id', function(req, res) {
 //Get all class info, search by name or id
 app.get('/class', function(req, res) {
 
-})
+});
 
 
 //Get class chat (or the last few messages). Start socket connection, and allow user to post chats
 app.get('/classchat/:id', function(req, res) {
 	
-})
+});
 
 
 //Create a new class (and class chat), check if name conflict
 app.post('/class', function(req, res) {
 	
-})
+});
 
 
 //LOCATIONS SECTION
@@ -222,19 +269,19 @@ app.post('/class', function(req, res) {
 //Get locations, possibly all or some locations
 app.get('/locations', function(req, res) {
 
-})
+});
 
 
 //Get location info
 app.get('/location/:id', function(req, res) {
 
-})
+});
 
 
 //Post location info
 app.post('/location', function(req, res) {
 
-})*/
+});
 
 
 app.listen(process.env.PORT || 3000);
