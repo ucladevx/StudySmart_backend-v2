@@ -70,7 +70,7 @@ Location Table:
 */
 
 
-var url = "mongodb://studysmart:Ucladevx@docdb-2019-01-22-02-17-38.cluster-cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017/?ssl_ca_certs=rds-combined-ca-bundle.pem&replicaSet=rs0";
+var url = "mongodb://studysmart:Ucladevx@docdb-2019-02-03-09-55-38.cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017";
 var CLIENT_ID = "THE APP'S CLIENT ID HERE";
 const client = new OAuth2Client(CLIENT_ID);
 
@@ -84,13 +84,13 @@ app.use(function(req, res, next) {
 
 
 app.get('/', function(req, res){
-	MongoClient.connect(url, function(err, db) {
+	MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
 		if (err) throw err;
 		console.log("Database connected");
 
 
 		db.close();
-		res.end("Nothing requested");
+		res.send("Nothing requested");
 	});
 })
 
