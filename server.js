@@ -136,13 +136,12 @@ app.get('/user/:id', function(req, res) {
 					db.close();
 					var errjson = {
 						error: "No user found",
-						newUser: false,
-						id: null
 					}
 					res.json(errjson);
 				}
 
 				db.close();
+				res.error = null;
 				res.json(resjson);
 			});
 		}).catch(function(err){
@@ -205,7 +204,7 @@ app.post('/user/:id', function(req, res) {
 						var resjson = {
 							error: null,
 							newUser: true,
-							id: result.value._id
+							id: socialId
 						}
 
 						db.close();
@@ -219,7 +218,7 @@ app.post('/user/:id', function(req, res) {
 						var resjson = {
 							error: null,
 							newUser: false,
-							id: result.value._id
+							id: socialId
 						}
 
 						db.close();
