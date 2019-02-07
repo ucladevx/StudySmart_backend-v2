@@ -10,40 +10,8 @@ JSON Format
     "Date": "February 5, 2019"
     "Day": "Tuesday"
     "Start Time": "1:00PM"
-    "End Time": "2:00PM"
 }
 */
-
-/*
-function updateTime(str){
-    for (i = 0; i < str.length; i++){
-        if (str[i] == "-") {
-            if (str[i+1] == "0") {
-                str[i+1] = "3";
-                return str;
-            }
-            if (str[i+1] == "3") {
-                str[i+1] = "0";
-                var changeTime = int(str[i-1])+1;
-                if (changeTime == 12){
-                    if (str[length-2] == "a"){
-                        str[length-2] = "p";
-                    } else {
-                        str[length-2] = "a";
-                    }
-                    return str;
-                }
-                if (changeTime == 13){
-                    str[i-2] = "0" 
-                    str[i-1] = "1"
-                    return str;
-                }
-            }
-        }
-    }
-}
-*/
-
 
 (async function main() {
   
@@ -51,13 +19,16 @@ function updateTime(str){
         
         const browser = await puppeteer.launch(/*{headless:false}*/);
         const [page] = await browser.pages();
+        //Url to visit
         await page.goto('http://calendar.library.ucla.edu/spaces?lid=4394&gid=0');
 
         const result = await page.evaluate(async () => {
-            
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            const num_rooms = document.querySelectorAll('.s-lc-eq-avail').length;
+            //Wait for webpage to load (may need to change this 2000 ms)
+            await new Promise((resolve) => setTimeout(resolve, 1500));
             const rooms = document.querySelectorAll('.s-lc-eq-avail');
+            //Save length to prevent function call overhead in for loop
+            const num_rooms = rooms.length;
+            //Empty array to append JSON objects to
             const data = [];
             
             for (let n = 0; n < num_rooms; n++) {
@@ -71,6 +42,7 @@ function updateTime(str){
                 //Split third element of splitByCommas array by dashes
                 var yearAndRoom = splitByCommas[2].split("-"); 
                 
+                //Specific study room numbers for Powell
                 if     (yearAndRoom[1].indexOf('A') > -1 || yearAndRoom[1].indexOf('B') > -1 || yearAndRoom[1].indexOf('C') > -1 || 
                         yearAndRoom[1].indexOf('D') > -1 || yearAndRoom[1].indexOf('E') > -1 || yearAndRoom[1].indexOf('F') > -1) 
                     {
@@ -80,9 +52,9 @@ function updateTime(str){
                         obj["Date"] = splitByCommas[1].trim() + yearAndRoom[0].trimRight();
                         obj["Day"] = timeAndDay[1].trim();
                         obj["Start Time"] = timeAndDay[0].trim();
-                        //obj["End Time"] = updateTime(obj["Start Time"]);
                     } 
                 
+                //Specific room numbers for YRL study rooms
                 else if(yearAndRoom[1].indexOf('G01') > -1 || yearAndRoom[1].indexOf('G02') > -1 || yearAndRoom[1].indexOf('G03') > -1 || 
                         yearAndRoom[1].indexOf('G04') > -1 || yearAndRoom[1].indexOf('G05') > -1 || yearAndRoom[1].indexOf('G06') > -1 ||
                         yearAndRoom[1].indexOf('G07') > -1 || yearAndRoom[1].indexOf('G08') > -1 || yearAndRoom[1].indexOf('G09') > -1 || 
@@ -97,6 +69,7 @@ function updateTime(str){
                         obj["Start Time"] = timeAndDay[0].trim();
                     } 
                 
+                //Everything else must be a study pod in YRL
                 else {
                         obj["Building Name"] = "Young Research Library";
                         obj["Room"] = yearAndRoom[1].trim();
@@ -117,8 +90,10 @@ function updateTime(str){
         await browser.close();
     } 
     
+    //If there is an error, write to console and exit
     catch (err) {
         console.error(err);
+        return;
     }
 
 })();
