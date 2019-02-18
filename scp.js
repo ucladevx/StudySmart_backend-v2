@@ -3,51 +3,53 @@ const request = require('request');
 
 /*
 //exam
+
 {
-    "name":"Arts Library",
-    "location":" 1400 Public Affairs Building, Los Angeles, CA 90095-1392","start_date":"Feb 17 ",
-    "department":
-    [
-        {
-            "department_name":"Arts Library",
-            "time":
-            [
-                {"dp_open_time":"1pm - 5pm"},
-                {"dp_open_time":"9am - 5pm"},
-                {"dp_open_time":"8am - 9pm"},
-                {"dp_open_time":"8am - 9pm"},
-                {"dp_open_time":"8am - 9pm"},
-                {"dp_open_time":"8am - 5pm"},
-                {"dp_open_time":"1pm - 5pm"}
-            ]
-        },
-        {
-            "department_name":"CLICC Laptop & iPad Lending (Arts Library)",
-            "time":
-            [
-                {"dp_open_time":"1pm - 4:30pm"},
-                {"dp_open_time":"9am - 4:30pm"},
-                {"dp_open_time":"8am - 8:30pm"},
-                {"dp_open_time":"8am - 8:30pm"},
-                {"dp_open_time":"8am - 8:30pm"},
-                {"dp_open_time":"8am - 4:30pm"},
-                {"dp_open_time":"1pm - 4:30pm"}
-            ]
-        },
-        {
-            "department_name":"Reference Desk",
-            "time":
-            [
-                {"dp_open_time":"Closed"},
-                {"dp_open_time":"Closed"},
-                {"dp_open_time":"11am - 4pm"},
-                {"dp_open_time":"11am - 4pm"},
-                {"dp_open_time":"11am - 4pm"},
-                {"dp_open_time":"11am - 4pm"},
-                {"dp_open_time":"Closed"}
-            ]
-        }
-    ]
+	"name":"Arts Library",
+	"location":" 1400 Public Affairs Building, Los Angeles, CA 90095-1392",
+	"start_date":"Feb 17 ",
+	"department":
+	[
+		{
+			"department_name":"Arts Library",
+			"time":
+			[
+				{"dp_open_time":"1pm - 5pm","date":"Su 17"},
+				{"dp_open_time":"9am - 5pm","date":"M 18"},
+				{"dp_open_time":"8am - 9pm","date":"Tu 19"},
+				{"dp_open_time":"8am - 9pm","date":"W 20"},
+				{"dp_open_time":"8am - 9pm","date":"Th 21"},
+				{"dp_open_time":"8am - 5pm","date":"F 22"},
+				{"dp_open_time":"1pm - 5pm","date":"Sa 23"}
+			]
+		},
+		{
+			"department_name":"CLICC Laptop & iPad Lending (Arts Library)",
+			"time":
+			[
+				{"dp_open_time":"1pm - 4:30pm","date":"Su 17"},
+				{"dp_open_time":"9am - 4:30pm","date":"M 18"},
+				{"dp_open_time":"8am - 8:30pm","date":"Tu 19"},
+				{"dp_open_time":"8am - 8:30pm","date":"W 20"},
+				{"dp_open_time":"8am - 8:30pm","date":"Th 21"},
+				{"dp_open_time":"8am - 4:30pm","date":"F 22"},
+				{"dp_open_time":"1pm - 4:30pm","date":"Sa 23"}
+			]
+		},
+		{
+			"department_name":"Reference Desk",
+			"time":
+			[
+				{"dp_open_time":"Closed","date":"Su 17"},
+				{"dp_open_time":"Closed","date":"M 18"},
+				{"dp_open_time":"11am - 4pm","date":"Tu 19"},
+				{"dp_open_time":"11am - 4pm","date":"W 20"},
+				{"dp_open_time":"11am - 4pm","date":"Th 21"},
+				{"dp_open_time":"11am - 4pm","date":"F 22"},
+				{"dp_open_time":"Closed","date":"Sa 23"}
+			]
+		}
+	]
 }
 */
 (async function main() {
