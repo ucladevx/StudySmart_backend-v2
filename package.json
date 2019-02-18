@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/aseem191/backend-v2#readme",
   "dependencies": {
+    "aws-sdk": "^2.404.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "express.js": "^1.0.0",

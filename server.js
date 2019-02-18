@@ -1,9 +1,12 @@
 var express = require('express');
-var mongo = require('mongodb');
-var MongoClient = require('mongodb').MongoClient;
 var bodyParser = require('body-parser');
 var {OAuth2Client} = require('google-auth-library');
 var io = require('socket.io-client');
+var AWS = require("aws-sdk");
+
+AWS.config.update({region:'us-east-1'});
+var dynamodb = new AWS.DynamoDB();
+var docClient = new AWS.DynamoDB.DocumentClient();
 
 var app = express();
 
@@ -62,7 +65,7 @@ classChat Collection:
 location Collection:
 
 {
-	_id: 
+	name: 
 	type: (library/study room/special)
 	mapCoords: (not sure how to implement)
 	activityLevel: (not sure how to measure)
@@ -70,8 +73,6 @@ location Collection:
 
 */
 
-
-var url = "mongodb://studysmart:Ucladevx@docdb-2019-02-03-09-55-38.cayykuvdkvwh.us-east-1.docdb.amazonaws.com:27017/";
 var CLIENT_ID = "373351297766-5f4knsqmvuu540bl3oh24i6qu2uh4lif.apps.googleusercontent.com";
 const oauthClient = new OAuth2Client(CLIENT_ID);
 
@@ -85,13 +86,20 @@ app.use(function(req, res, next) {
 
 
 app.get('/', function(req, res){
-	MongoClient.connect(url, function(err, db) {
-		if (err) throw err;
-		console.log("Database connected");
 
+	var query = {
+		TableName: "user",
+		Key: {
+			"_id": "mytest",
+		},
+	};
 
-		db.close();
-		res.send("Database connected, nothing requested");
+	docClient.get(query, function(err, data) {
+		if (err) {
+			throw err;
+			res.send("err")
+		}
+		res.send(data);
 	});
 })
 
@@ -126,7 +134,18 @@ app.get('/user/:id', function(req, res) {
 		})
 
 		verifyToken.then(function(userId){
-			var query = {_id: userId}
+			var query = {
+				TableName: "user",
+				Key: {
+					"_id": userId
+				}
+			};
+
+			docClient.get(params, function(err, data) {
+				if (err) throw err;
+				d
+			});
+
 			var dbo = db.db("studysmart");
 			dbo.collection("user").find(query).toArray(function(err, result) {
 				if (err) throw err;
@@ -164,80 +183,75 @@ app.post('/user/:id', function(req, res) {
 	//var userId = req.params.id;
 	var socialId = req.params.socialId;
 
-	MongoClient.connect(url, function(err, db) {
-		if (err) throw err;
-		console.log("Database connected");
-
-		const verifyToken = new Promise(function(resolve, reject){
-			client.verifyIdToken(
-				socialId,
-				CLIENT_ID,
-				function (e, login){
-					if (login) {
-						var payload = login.getPayload();
-						var googleId = payload['sub'];
-						resolve(googleId);
-					} else {
-						reject("invalid token");
-					}
+	const verifyToken = new Promise(function(resolve, reject){
+		client.verifyIdToken(
+			socialId,
+			CLIENT_ID,
+			function (e, login){
+				if (login) {
+					var payload = login.getPayload();
+					var googleId = payload['sub'];
+					resolve(googleId);
+				} else {
+					reject("invalid token");
 				}
-			)
-		})
-
-		verifyToken.then(function(userId){
-			var query = {_id: userId};
-			var dbo = db.db("studysmart");
-			dbo.collection("user").find(query).toArray(function(err, result) {
-				if (err) throw err;
-				var resjson = result[0];
-
-				if(result.length == 0){
-					var newUser = {
-						_id: userId,
-						socialId: socialId,
-						classes: [],
-						testPoints: 0
-					}
-
-					dbo.collection("user").insertOneAndUpdate(newUser, function(err, result) {
-						if (err) throw err;
-						var resjson = {
-							error: null,
-							newUser: true,
-							id: socialId
-						}
-
-						db.close();
-						res.json(resjson);
-					});
-				}
-				else{
-					var toupdate = {$set: {socialId: socialId}};
-					dbo.collection("user").findOneAndUpdate(query, toupdate, function(err, result) {
-						if (err) throw err;
-						var resjson = {
-							error: null,
-							newUser: false,
-							id: socialId
-						}
-
-						db.close();
-						res.json(resjson);
-					});
-				}
-			});
-
-		}).catch(function(err){
-			console.log(err);
-			var resjson = {
-				error: "Authentication error",
-				newUser: false,
-				id: null
 			}
+		)
+	})
 
-			db.close();
-			res.json(resjson);
+	verifyToken.then(function(userId){
+		var query = {_id: userId};
+		var dbo = db.db("studysmart");
+		dbo.collection("user").find(query).toArray(function(err, result) {
+			if (err) throw err;
+			var resjson = result[0];
+
+			if(result.length == 0){
+				var newUser = {
+					_id: userId,
+					socialId: socialId,
+					classes: [],
+					testPoints: 0
+				}
+
+				dbo.collection("user").insertOneAndUpdate(newUser, function(err, result) {
+					if (err) throw err;
+					var resjson = {
+						error: null,
+						newUser: true,
+						id: socialId
+					}
+
+					db.close();
+					res.json(resjson);
+				});
+			}
+			else{
+				var toupdate = {$set: {socialId: socialId}};
+				dbo.collection("user").findOneAndUpdate(query, toupdate, function(err, result) {
+					if (err) throw err;
+					var resjson = {
+						error: null,
+						newUser: false,
+						id: socialId
+					}
+
+					db.close();
+					res.json(resjson);
+				});
+			}
 		});
+
+	}).catch(function(err){
+		console.log(err);
+		var resjson = {
+			error: "Authentication error",
+			newUser: false,
+			id: null
+		}
+
+		db.close();
+		res.json(resjson);
 	});
 });
 
@@ -280,6 +294,35 @@ app.get('/location/:id', function(req, res) {
 //Post location info
 app.post('/location', function(req, res) {
 
+});
+
+
+//Post libinfo
+app.post('/libinfo', function(req, res) {
+	var infoArr = req.body.infoArr;
+	var arrLength = infoArr.length;
+	var completed = 0;
+
+	infoArr.forEach((info) => {
+		var entry = {
+			TableName: "lib_info",
+			Key: {
+				name: info.name,
+				location: info.location,
+				department: info.department,
+			},
+		};
+
+		docClient.put(entry, function(err, data) {
+			completed++;
+			if (err) {
+				throw err;
+			}
+			if(completed == arrLength){
+				res.send("done");
+			}
+		});
+	})
 });
 
 
