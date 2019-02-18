@@ -104,6 +104,7 @@ const request = require('request');
                     {
                         var dp_time_obj = new Object();
                         dp_time_obj["dp_open_time"]=dp_info[j+1]
+                        dp_time_obj["date"]=date[j+1]
                         dp_open_time.push(dp_time_obj); 
                     }
                     dp_obj["time"]=dp_open_time
