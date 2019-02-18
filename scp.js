@@ -2,61 +2,60 @@ const puppeteer = require('puppeteer');
 const request = require('request');
 
 /*
-//exam
-
+//
 {
-	"name":"Arts Library",
-	"location":" 1400 Public Affairs Building, Los Angeles, CA 90095-1392",
-	"start_date":"Feb 17 ",
-	"department":
-	[
-		{
-			"department_name":"Arts Library",
-			"time":
-			[
-				{"dp_open_time":"1pm - 5pm","date":"Su 17"},
-				{"dp_open_time":"9am - 5pm","date":"M 18"},
-				{"dp_open_time":"8am - 9pm","date":"Tu 19"},
-				{"dp_open_time":"8am - 9pm","date":"W 20"},
-				{"dp_open_time":"8am - 9pm","date":"Th 21"},
-				{"dp_open_time":"8am - 5pm","date":"F 22"},
-				{"dp_open_time":"1pm - 5pm","date":"Sa 23"}
-			]
-		},
-		{
-			"department_name":"CLICC Laptop & iPad Lending (Arts Library)",
-			"time":
-			[
-				{"dp_open_time":"1pm - 4:30pm","date":"Su 17"},
-				{"dp_open_time":"9am - 4:30pm","date":"M 18"},
-				{"dp_open_time":"8am - 8:30pm","date":"Tu 19"},
-				{"dp_open_time":"8am - 8:30pm","date":"W 20"},
-				{"dp_open_time":"8am - 8:30pm","date":"Th 21"},
-				{"dp_open_time":"8am - 4:30pm","date":"F 22"},
-				{"dp_open_time":"1pm - 4:30pm","date":"Sa 23"}
-			]
-		},
-		{
-			"department_name":"Reference Desk",
-			"time":
-			[
-				{"dp_open_time":"Closed","date":"Su 17"},
-				{"dp_open_time":"Closed","date":"M 18"},
-				{"dp_open_time":"11am - 4pm","date":"Tu 19"},
-				{"dp_open_time":"11am - 4pm","date":"W 20"},
-				{"dp_open_time":"11am - 4pm","date":"Th 21"},
-				{"dp_open_time":"11am - 4pm","date":"F 22"},
-				{"dp_open_time":"Closed","date":"Sa 23"}
-			]
-		}
-	]
-}
-*/
+    "name":"Arts Library",
+    "location":" 1400 Public Affairs Building, Los Angeles, CA 90095-1392",
+    "phone":"(310) 206-5425",
+    "image":"https://www.library.ucla.edu/sites/default/files/styles/thumbnail_large/public/location_map_images/map_arts.png?itok=0LT3XP_5",
+    "start_date":"Feb 17 ",
+    "department":
+    [
+    {
+        "department_name":"Arts Library",
+        "time":
+        [
+        {"dp_open_time":"1pm - 5pm","date":"Su 17"},
+        {"dp_open_time":"9am - 5pm","date":"M 18"},
+        {"dp_open_time":"8am - 9pm","date":"Tu 19"},
+        {"dp_open_time":"8am - 9pm","date":"W 20"},
+        {"dp_open_time":"8am - 9pm","date":"Th 21"},
+        {"dp_open_time":"8am - 5pm","date":"F 22"},
+        {"dp_open_time":"1pm - 5pm","date":"Sa 23"}
+        ]
+    },
+    {
+        "department_name":"CLICC Laptop & iPad Lending (Arts Library)",
+        "time":
+        [
+        {"dp_open_time":"1pm - 4:30pm","date":"Su 17"},
+        {"dp_open_time":"9am - 4:30pm","date":"M 18"},
+        {"dp_open_time":"8am - 8:30pm","date":"Tu 19"},
+        {"dp_open_time":"8am - 8:30pm","date":"W 20"},
+        {"dp_open_time":"8am - 8:30pm","date":"Th 21"},
+        {"dp_open_time":"8am - 4:30pm","date":"F 22"},
+        {"dp_open_time":"1pm - 4:30pm","date":"Sa 23"}
+        ]
+    },
+    {
+        "department_name":"Reference Desk",
+        "time":
+        [
+        {"dp_open_time":"Closed","date":"Su 17"},
+        {"dp_open_time":"Closed","date":"M 18"},
+        {"dp_open_time":"11am - 4pm","date":"Tu 19"},
+        {"dp_open_time":"11am - 4pm","date":"W 20"},
+        {"dp_open_time":"11am - 4pm","date":"Th 21"},
+        {"dp_open_time":"11am - 4pm","date":"F 22"},
+        {"dp_open_time":"Closed","date":"Sa 23"}]
+    }
+    ]
+}*/
 (async function main() {
   
     try {
         
-        const browser = await puppeteer.launch({headless:false});
+        const browser = await puppeteer.launch();
         const [page] = await browser.pages();
         //Url to visit
         await page.goto('https://www.library.ucla.edu/hours');
@@ -69,6 +68,10 @@ const request = require('request');
             const addresses=document.querySelectorAll('div.location__address')
             //find opening times of the 11 libraries
             const time_of_dp=document.querySelectorAll('table.opening-hours-week')
+            //find phone number
+            const phones = document.querySelectorAll('span.location__phone-number')
+            //find image
+            const imgs=document.querySelectorAll('img')
             const num_rooms = names.length;
             const data = [];
             for (let n = 0; n < num_rooms; n++)
@@ -81,7 +84,12 @@ const request = require('request');
                 //add location to lib obj
                 const lib_loc=addresses[n].innerText
                 obj["location"]=lib_loc
-                
+                //add phone-number to lib obj
+                const lib_phone=phones[n].innerText
+                obj["phone"]=lib_phone
+                //add image to lib obj
+                const img=imgs[n+1].src
+                obj["image"]=img                
                 //add department to lib obj
                 const department=[]
                 lib_dp = time_of_dp[n].innerText
