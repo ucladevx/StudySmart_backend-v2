@@ -306,7 +306,7 @@ app.post('/libinfo', function(req, res) {
 	infoArr.forEach((info) => {
 		var entry = {
 			TableName: "lib_info",
-			Key: {
+			Item: {
 				name: info.name,
 				location: info.location,
 				department: info.department,
