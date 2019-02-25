@@ -52,7 +52,7 @@ const request = require('request');
     ]
 }*/
 module.exports = {
-    test: async function () {
+    scrape: async function () {
         try {
             // console.log("here");
             console.log("here");
