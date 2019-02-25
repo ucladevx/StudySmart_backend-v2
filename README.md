@@ -1,4 +1,4 @@
-# StudySmart Backend V2
+# Web scrapers
 
 
 ## how to run
