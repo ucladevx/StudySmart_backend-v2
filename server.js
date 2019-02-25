@@ -296,6 +296,25 @@ app.post('/location', function(req, res) {
 
 });
 
+//Post libinfo
+app.post('/libinfo/:name', function(req, res) {
+	var query = {
+		TableName: "lib_info",
+		Key: {
+			"name": req.params.name,
+		},
+	};
+
+	docClient.get(query, function(err, data) {
+		if (err) {
+			throw err;
+			res.send("err")
+		}
+		res.send(data);
+	});
+});
+
+
 
 //Post libinfo
 app.post('/libinfo', function(req, res) {
