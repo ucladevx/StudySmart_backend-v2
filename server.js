@@ -297,7 +297,7 @@ app.post('/location', function(req, res) {
 });
 
 //Post libinfo
-app.post('/libinfo/:name', function(req, res) {
+app.get('/libinfo/:name', function(req, res) {
 	var query = {
 		TableName: "lib_info",
 		Key: {
