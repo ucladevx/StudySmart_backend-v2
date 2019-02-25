@@ -299,7 +299,7 @@ app.post('/location', function(req, res) {
 
 //Post libinfo
 app.post('/libinfo', function(req, res) {
-	var infoArr = req.body.infoArr;
+	var infoArr = req.body;
 	var arrLength = infoArr.length;
 	var completed = 0;
 
