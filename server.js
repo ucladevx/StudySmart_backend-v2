@@ -296,7 +296,22 @@ app.post('/location', function(req, res) {
 
 });
 
-//Post libinfo
+//Get libinfo
+app.get('/libinfo', function(req, res) {
+	var query = {
+		TableName: "lib_info",
+	};
+
+	dynamodb.scan(query, function(err, data) {
+		if (err) {
+			throw err;
+			res.send("err")
+		}
+		res.send(JSON.stringify(data));
+	});
+});
+
+
 app.get('/libinfo/:name', function(req, res) {
 	var query = {
 		TableName: "lib_info",
