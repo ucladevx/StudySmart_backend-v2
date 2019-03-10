@@ -362,17 +362,36 @@ app.post('/libinfo', function(req, res) {
 
 //Get studyinfo
 app.get('/studyinfo', function(req, res) {
-	var query = {
-		TableName: "study_info",
-	};
+	if(!req.query.name && !req.query.date && !req.query.duration && !req.query.time){
+		var query = {
+			TableName: "study_info",
+		};
 
-	dynamodb.scan(query, function(err, data) {
-		if (err) {
-			throw err;
-			res.send("err")
-		}
-		res.send(JSON.stringify(data));
-	});
+		dynamodb.scan(query, function(err, data) {
+			if (err) {
+				throw err;
+				res.send("err")
+			}
+			res.send(JSON.stringify(data));
+		});
+	}
+	else if(req.query.name){
+		var query = {
+			TableName: "study_info",
+			Key: {
+				"name": req.params.name,
+			},
+		};
+
+		docClient.get(query, function(err, data) {
+			if (err) {
+				throw err;
+				res.send("err")
+			}
+			res.send(data);
+		});
+	}
+	
 });
 
 
@@ -394,7 +413,7 @@ app.get('/studyinfo/name/:name', function(req, res) {
 });
 
 
-app.get('/studyinfo/date/:date', function(req, res) {
+app.get('/studyinfo', function(req, res) {
 	var query = {
 		TableName: "study_info",
 		IndexName: "date-index",
@@ -421,16 +440,31 @@ app.post('/studyinfo', function(req, res) {
 	var completed = 0;
 
 	infoArr.forEach((info) => {
-		var splitDetails = info["Room Details"].split(" ");
-		var infoName = splitDetails[0] + " " + splitDetails[1] + " " + splitDetails[2];
-		var splitTime = info.Time.split(" ");
-		var infoDate = splitTime[2] + " " + splitTime[3] + " " + splitTime[4];
+		var splitLink = info.Link.split("?").join("=").split("&").join("=").split("=");
+		var infoName, infoDate, infoDuration, infoStart;
+
+		for(var i = 0; i < splitLink.size(); i++){
+			if(splitLink[i] == "type"){
+				infoName = splitLink[i+1]
+			}
+			else if(splitLink[i] == "date"){
+				infoDate = splitLink[i+1]
+			}
+			else if(splitLink[i] == "duration"){
+				infoDuration = splitLink[i+1]
+			}
+			else if(splitLink[i] == "start"){
+				infoStart = splitLink[i+1]
+			}
+		}
 
 		var entry = {
 			TableName: "study_info",
 			Item: {
 				name: infoName,
 				date: infoDate,
+				duration: infoDuration,
+				start: infoStart,
 				details: info["Room Details"],
 				time: info.Time,
 				link: info.Link,
