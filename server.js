@@ -375,13 +375,48 @@ app.get('/studyinfo', function(req, res) {
 			res.send(JSON.stringify(data));
 		});
 	}
-	else if(req.query.name){
+	else{
 		var query = {
 			TableName: "study_info",
-			Key: {
-				"name": req.params.name,
-			},
 		};
+
+		if(req.query.name){
+			query.IndexName = "name-index";
+			query.KeyConditionExpression = "name = :name";
+		}
+		else if(req.query.date){
+			query.IndexName = "date-index";
+			query.KeyConditionExpression = "date = :date";
+		}
+		else if(req.query.duration){
+			query.IndexName = "duration-index";
+			query.KeyConditionExpression = "duration = :duration";
+		}
+		else if(req.query.time){
+			query.IndexName = "start-index";
+			query.KeyConditionExpression = "start = :start";
+		}
+
+		var FilterArr = [];
+
+		if(req.query.name){
+			FilterArr.append("name = :name");
+			query.ExpressionAttributeValues[":name"] = req.query.name;
+		}
+		if(req.query.date){
+			FilterArr.append("date = :date");
+			query.ExpressionAttributeValues[":date"] = req.query.date;
+		}
+		if(req.query.duration){
+			FilterArr.append("duration = :duration");
+			query.ExpressionAttributeValues[":duration"] = req.query.duration;
+		}
+		if(req.query.time){
+			FilterArr.append("start = :start");
+			query.ExpressionAttributeValues[":start"] = req.query.start;
+		}
+
+		query.FilterExpression = FilterArr.join(" and ");
 
 		docClient.get(query, function(err, data) {
 			if (err) {
@@ -392,44 +427,6 @@ app.get('/studyinfo', function(req, res) {
 		});
 	}
 	
-});
-
-
-app.get('/studyinfo/name/:name', function(req, res) {
-	var query = {
-		TableName: "study_info",
-		Key: {
-			"name": req.params.name,
-		},
-	};
-
-	docClient.get(query, function(err, data) {
-		if (err) {
-			throw err;
-			res.send("err")
-		}
-		res.send(data);
-	});
-});
-
-
-app.get('/studyinfo', function(req, res) {
-	var query = {
-		TableName: "study_info",
-		IndexName: "date-index",
-		KeyConditionExpression: "date = :date",
-		ExpressionAttributeValues: {
-			":date": req.params.date,
-		},
-	};
-
-	docClient.query(query, function(err, data) {
-		if (err) {
-			throw err;
-			res.send("err")
-		}
-		res.send(data);
-	});
 });
 
 
@@ -461,13 +458,13 @@ app.post('/studyinfo', function(req, res) {
 		var entry = {
 			TableName: "study_info",
 			Item: {
+				link: info.Link,
 				name: infoName,
 				date: infoDate,
 				duration: infoDuration,
 				start: infoStart,
 				details: info["Room Details"],
 				time: info.Time,
-				link: info.Link,
 			},
 		};
 
