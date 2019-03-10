@@ -443,7 +443,7 @@ app.post('/studyinfo', function(req, res) {
 		var splitLink = info.Link.split("?").join("=").split("&").join("=").split("=");
 		var infoName, infoDate, infoDuration, infoStart;
 
-		for(var i = 0; i < splitLink.size(); i++){
+		for(var i = 0; i < splitLink.length; i++){
 			if(splitLink[i] == "type"){
 				infoName = splitLink[i+1]
 			}
