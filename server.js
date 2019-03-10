@@ -398,6 +398,7 @@ app.get('/studyinfo', function(req, res) {
 		}
 
 		var FilterArr = [];
+		query.ExpressionAttributeValues = {};
 
 		if(req.query.name){
 			FilterArr.push("name = :name");
