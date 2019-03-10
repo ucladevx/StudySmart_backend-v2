@@ -419,7 +419,7 @@ app.get('/studyinfo', function(req, res) {
 
 		query.FilterExpression = FilterArr.join(" and ");
 
-		docClient.get(query, function(err, data) {
+		docClient.query(query, function(err, data) {
 			if (err) {
 				throw err;
 				res.send("err")
