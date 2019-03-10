@@ -400,19 +400,19 @@ app.get('/studyinfo', function(req, res) {
 		var FilterArr = [];
 
 		if(req.query.name){
-			FilterArr.append("name = :name");
+			FilterArr.push("name = :name");
 			query.ExpressionAttributeValues[":name"] = req.query.name;
 		}
 		if(req.query.date){
-			FilterArr.append("date = :date");
+			FilterArr.push("date = :date");
 			query.ExpressionAttributeValues[":date"] = req.query.date;
 		}
 		if(req.query.duration){
-			FilterArr.append("duration = :duration");
+			FilterArr.push("duration = :duration");
 			query.ExpressionAttributeValues[":duration"] = req.query.duration;
 		}
 		if(req.query.time){
-			FilterArr.append("start = :start");
+			FilterArr.push("start = :start");
 			query.ExpressionAttributeValues[":start"] = req.query.start;
 		}
 
