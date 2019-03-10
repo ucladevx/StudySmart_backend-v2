@@ -1,6 +1,7 @@
 'use strict';
 
 const puppeteer = require('puppeteer');
+const request = require('request');
 
 /*
 JSON Format {
@@ -20,7 +21,7 @@ JSON Format {
 
     const result = await page.evaluate(async () => {
         const list_rooms = document.querySelectorAll('.reserve-grid .col-md-4 input').length;
-        const data = [];
+        const data1 = [];
         for(let n = 0; n < list_rooms; n++) {
             const room = document.querySelectorAll('.reserve-grid .col-md-4 input').item(n);
             room.click();
@@ -29,6 +30,7 @@ JSON Format {
             await new Promise((resolve) => setTimeout(resolve, 2000));
             const length = document.querySelectorAll('.calendar-available').length; 
             for (let j = 0; j < 7 && j < length; j++) { 
+                const data = [];
                 const element = document.querySelectorAll('.calendar-available').item(j);
                 element.click();
                 await new Promise((resolve) => setTimeout(resolve, 2000));
@@ -56,11 +58,18 @@ JSON Format {
                   //Push
                   data.push(obj);
                 }
+                data1.push(data)
             } 
         }
-        return data;
+        return data1;
     });
 
+    for(let i = 0; i < result.length; i++) {
+        request.post({ url: "http://studysmart-env-2.dqiv29pdi2.us-east-1.elasticbeanstalk.com/studyinfo", headers: { 'content-type': 'application/json' }, body: JSON.stringify(result[i]) }, function (err, response, body) {
+            console.log(response.body)
+            //console.log(JSON.stringify(response.body))
+        })
+    }
     console.log(result);
     await browser.close();
   } 
