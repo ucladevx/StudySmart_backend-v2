@@ -360,4 +360,94 @@ app.post('/libinfo', function(req, res) {
 });
 
 
+//Get studyinfo
+app.get('/studyinfo', function(req, res) {
+	var query = {
+		TableName: "study_info",
+	};
+
+	dynamodb.scan(query, function(err, data) {
+		if (err) {
+			throw err;
+			res.send("err")
+		}
+		res.send(JSON.stringify(data));
+	});
+});
+
+
+app.get('/studyinfo/name/:name', function(req, res) {
+	var query = {
+		TableName: "study_info",
+		Key: {
+			"name": req.params.name,
+		},
+	};
+
+	docClient.get(query, function(err, data) {
+		if (err) {
+			throw err;
+			res.send("err")
+		}
+		res.send(data);
+	});
+});
+
+
+app.get('/studyinfo/date/:date', function(req, res) {
+	var query = {
+		TableName: "study_info",
+		IndexName: "date-index",
+		KeyConditionExpression: "date = :date",
+		ExpressionAttributeValues: {
+			":date": req.params.date,
+		},
+	};
+
+	docClient.query(query, function(err, data) {
+		if (err) {
+			throw err;
+			res.send("err")
+		}
+		res.send(data);
+	});
+});
+
+
+//Post libinfo
+app.post('/studyinfo', function(req, res) {
+	var infoArr = req.body;
+	var arrLength = infoArr.length;
+	var completed = 0;
+
+	infoArr.forEach((info) => {
+		var splitDetails = info["Room Details"].split(" ");
+		var infoName = splitDetails[0] + " " + splitDetails[1] + " " + splitDetails[2];
+		var splitTime = info.Time.split(" ");
+		var infoDate = splitTime[2] + " " + splitTime[3] + " " + splitTime[4];
+
+		var entry = {
+			TableName: "study_info",
+			Item: {
+				name: infoName,
+				date: infoDate,
+				details: info["Room Details"],
+				time: info.Time,
+				link: info.Link,
+			},
+		};
+
+		docClient.put(entry, function(err, data) {
+			completed++;
+			if (err) {
+				throw err;
+			}
+			if(completed == arrLength){
+				res.send("done");
+			}
+		});
+	})
+});
+
+
 app.listen(process.env.PORT || 3000);
