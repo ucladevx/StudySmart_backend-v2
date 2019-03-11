@@ -436,7 +436,9 @@ app.get('/studyinfo', function(req, res) {
 			query.ExpressionAttributeValues[":start"] = req.query.start;
 		}
 
-		FilterArr.length > 0 ? query.FilterExpression = FilterArr.join(" and ") : ;
+		if(FilterArr.length > 0){
+			query.FilterExpression = FilterArr.join(" and ");
+		}
 
 		docClient.query(query, function(err, data) {
 			if (err) {
