@@ -380,43 +380,57 @@ app.get('/studyinfo', function(req, res) {
 			TableName: "study_info",
 		};
 
-		if(req.query.name){
-			query.IndexName = "name-index";
-			query.KeyConditionExpression = "#nm = :name";
-		}
-		else if(req.query.date){
-			query.IndexName = "date-index";
-			query.KeyConditionExpression = "#dt = :date";
-		}
-		else if(req.query.duration){
-			query.IndexName = "duration-index";
-			query.KeyConditionExpression = "#dur = :duration";
-		}
-		else if(req.query.time){
-			query.IndexName = "start-index";
-			query.KeyConditionExpression = "#st = :start";
-		}
-
-		var FilterArr = [];
+		var keyType = "";
 		query.ExpressionAttributeValues = {};
 		query.ExpressionAttributeNames = {};
 
 		if(req.query.name){
+			query.IndexName = "name-index";
+			query.KeyConditionExpression = "#nm = :name";
+			query.ExpressionAttributeNames["#nm"] = "name";
+			query.ExpressionAttributeValues[":name"] = req.query.name;
+			keyType = "name";
+		}
+		else if(req.query.date){
+			query.IndexName = "date-index";
+			query.KeyConditionExpression = "#dt = :date";
+			query.ExpressionAttributeNames["#dt"] = "date";
+			query.ExpressionAttributeValues[":date"] = req.query.date;
+			keyType = "date";
+		}
+		else if(req.query.duration){
+			query.IndexName = "duration-index";
+			query.KeyConditionExpression = "#dur = :duration";
+			query.ExpressionAttributeNames["#dur"] = "duration";
+			query.ExpressionAttributeValues[":duration"] = req.query.duration;
+			keyType = "duration";
+		}
+		else if(req.query.time){
+			query.IndexName = "start-index";
+			query.KeyConditionExpression = "#st = :start";
+			query.ExpressionAttributeNames["#st"] = "start";
+			query.ExpressionAttributeValues[":start"] = req.query.start;
+			keyType = "start";
+		}
+
+		var FilterArr = [];
+
+		if(req.query.name && keyType != "name"){
 			FilterArr.push("#nm = :name");
 			query.ExpressionAttributeNames["#nm"] = "name";
 			query.ExpressionAttributeValues[":name"] = req.query.name;
 		}
-		if(req.query.date){
+		if(req.query.date && keyType != "date"){
 			FilterArr.push("#dt = :date");
 			query.ExpressionAttributeNames["#dt"] = "date";
 			query.ExpressionAttributeValues[":date"] = req.query.date;
 		}
-		if(req.query.duration){
+		if(req.query.duration && keyType != "duration"){
 			FilterArr.push("#dur = :duration");
 			query.ExpressionAttributeNames["#dur"] = "duration";
 			query.ExpressionAttributeValues[":duration"] = req.query.duration;
 		}
-		if(req.query.time){
+		if(req.query.time && keyType != "start"){
 			FilterArr.push("#st = :start");
 			query.ExpressionAttributeNames["#st"] = "start";
 			query.ExpressionAttributeValues[":start"] = req.query.start;
