@@ -97,7 +97,6 @@ JSON Format {
                 }
                 data1.push(data)
             } 
-            if(n==2) break;
         }
         return data1;
     });
