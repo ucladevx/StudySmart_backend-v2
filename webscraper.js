@@ -10,11 +10,18 @@ JSON Format {
   "Link": "https://www.orl.ucla.edu/reserve?type=sproulstudy&duration=60&date=2019-03-03&roomid=3584&start=1551682800&stop=1551686400"
 }
 */
+async function postRequest(obj) {
+  request.post({ url: "http://studysmart-env-2.dqiv29pdi2.us-east-1.elasticbeanstalk.com/studyinfo", headers: { 'content-type': 'application/json' }, body: JSON.stringify(obj) }, function (err, response, body) {
+    console.log(response.body)
+    new Promise((resolve) => setTimeout(resolve, 10000));
+    //console.log(JSON.stringify(response.body))
+})
+}  
 
 (async function main() {
   
   try {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({headless: false});
     const [page] = await browser.pages();
 
     await page.goto('https://reslife.ucla.edu/reserve');
@@ -30,7 +37,7 @@ JSON Format {
             hour1.click();
             await new Promise((resolve) => setTimeout(resolve, 2000));
             const length = document.querySelectorAll('.calendar-available').length; 
-            for (let j = 0; j < 7 && j < length; j++) { 
+            for (let j = 0; j < 2 && j < length; j++) { 
                 const data = [];
                 const element = document.querySelectorAll('.calendar-available').item(j);
                 element.click();
@@ -62,11 +69,11 @@ JSON Format {
                 data1.push(data)
             }
             await new Promise((resolve) => setTimeout(resolve, 2000)); 
-            const hour2 = document.querySelectorAll('.reserve-grid .col-md-6 input').item(1)
+          /*  const hour2 = document.querySelectorAll('.reserve-grid .col-md-6 input').item(1)
             hour2.click();
             await new Promise((resolve) => setTimeout(resolve, 2000));
             const length2 = document.querySelectorAll('.calendar-available').length; 
-            for (let j = 0; j < 7 && j < length2; j++) { 
+            for (let j = 0; j < 2 && j < length2; j++) { 
                 const data = [];
                 const element = document.querySelectorAll('.calendar-available').item(j);
                 element.click();
@@ -96,18 +103,21 @@ JSON Format {
                   data.push(obj);
                 }
                 data1.push(data)
-            } 
+            }
+           if(n==3)
+            break; */
         }
         return data1;
     });
 
-    for(let i = 0; i < result.length; i++) {
-        request.post({ url: "http://studysmart-env-2.dqiv29pdi2.us-east-1.elasticbeanstalk.com/studyinfo", headers: { 'content-type': 'application/json' }, body: JSON.stringify(result[i]) }, function (err, response, body) {
+ // for(let i = 0; i < result.length; i++) {
+    request.post({ url: "http://studysmart-env-2.dqiv29pdi2.us-east-1.elasticbeanstalk.com/studyinfo", headers: { 'content-type': 'application/json' }, body: JSON.stringify(result) }, function (err, response, body) {
             console.log(response.body)
-            new Promise((resolve) => setTimeout(resolve, 4000));
+            new Promise((resolve) => setTimeout(resolve, 10000));
             //console.log(JSON.stringify(response.body))
-        })
-    }
+    }) 
+    //    postRequest(result[i]);
+   //}
     console.log(result);
     await browser.close();
   } 
