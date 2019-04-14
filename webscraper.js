@@ -1,8 +1,9 @@
-'use strict';
+"use strict";
 
-const puppeteer = require('puppeteer');
-const request = require('request');
-
+const moment = require("moment-timezone");
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
+const request = require("request");
 /*
 JSON Format {
   "Room Details": "Sproul Study Room 110E (max 4 people)",
@@ -11,107 +12,74 @@ JSON Format {
 }
 */
 
-(async function main() {
-  
-  try {
-    const browser = await puppeteer.launch();
-    const [page] = await browser.pages();
+const meetingRooms = [
+  "deneve",
+  "hedrick",
+  "hedrickstudy",
+  "hedrickmusic",
+  "movement",
+  "music",
+  "rieber",
+  "sproulmusic",
+  "sproulstudy"
+];
 
-    await page.goto('https://reslife.ucla.edu/reserve');
+const durations = ["60", "120"];
 
-    const result = await page.evaluate(async () => {
-        const list_rooms = document.querySelectorAll('.reserve-grid .col-md-4 input').length;
-        const data1 = [];
-        for(let n = 0; n < list_rooms; n++) {
-            const room = document.querySelectorAll('.reserve-grid .col-md-4 input').item(n);
-            room.click();
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            const hour1 = document.querySelectorAll('.reserve-grid .col-md-6 input').item(0)
-            hour1.click();
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            const length = document.querySelectorAll('.calendar-available').length; 
-            for (let j = 0; j < 7 && j < length; j++) { 
-                const data = [];
-                const element = document.querySelectorAll('.calendar-available').item(j);
-                element.click();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                let columns = document.querySelectorAll('.col-md-6');
-                //Get all links so that you can redirect user to registration page directly
-                let links = document.getElementsByTagName('a');
-                let filteredLinks = [];
-                //Need to filter all links so that we only save the ones with the class mentioned below
-                for (k = 0; k < links.length; k++){
-                  if (links[k].getAttribute("class") == "btn btn-sm btn-block btn-default btn-select"){
-                    filteredLinks.push(links[k]);
-                  }
-                }
-                //Counter for filtered links
-                var k = 0;
-                //Start at 2 because first value is not relevant
-                //Increment by 2 because every pair of 2 elements gives us "room details" and "time"
-                for(i = 2; i < columns.length; i+=2) {
-                  //Create JS object and push required elements
-                  var obj = new Object();
-                  obj["Room Details"] = columns[i].innerText;
-                  obj["Time"] = columns[i+1].innerText;
-                  obj["Link"] = filteredLinks[k].getAttribute("href");
-                  k++;
-                  //Push
-                  data.push(obj);
-                }
-                data1.push(data)
-            }
-            await new Promise((resolve) => setTimeout(resolve, 2000)); 
-            const hour2 = document.querySelectorAll('.reserve-grid .col-md-6 input').item(1)
-            hour2.click();
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            const length2 = document.querySelectorAll('.calendar-available').length; 
-            for (let j = 0; j < 7 && j < length2; j++) { 
-                const data = [];
-                const element = document.querySelectorAll('.calendar-available').item(j);
-                element.click();
-                await new Promise((resolve) => setTimeout(resolve, 2000));
-                let columns = document.querySelectorAll('.col-md-6');
-                //Get all links so that you can redirect user to registration page directly
-                let links = document.getElementsByTagName('a');
-                let filteredLinks = [];
-                //Need to filter all links so that we only save the ones with the class mentioned below
-                for (k = 0; k < links.length; k++){
-                  if (links[k].getAttribute("class") == "btn btn-sm btn-block btn-default btn-select"){
-                    filteredLinks.push(links[k]);
-                  }
-                }
-                //Counter for filtered links
-                var k = 0;
-                //Start at 2 because first value is not relevant
-                //Increment by 2 because every pair of 2 elements gives us "room details" and "time"
-                for(i = 2; i < columns.length; i+=2) {
-                  //Create JS object and push required elements
-                  var obj = new Object();
-                  obj["Room Details"] = columns[i].innerText;
-                  obj["Time"] = columns[i+1].innerText;
-                  obj["Link"] = filteredLinks[k].getAttribute("href");
-                  k++;
-                  //Push
-                  data.push(obj);
-                }
-                data1.push(data)
-            } 
-        }
-        return data1;
-    });
+var now = moment().tz("America/Los_Angeles");
+const formatString = "YYYY-MM-DD";
 
-    for(let i = 0; i < result.length; i++) {
-        request.post({ url: "http://studysmart-env-2.dqiv29pdi2.us-east-1.elasticbeanstalk.com/studyinfo", headers: { 'content-type': 'application/json' }, body: JSON.stringify(result[i]) }, function (err, response, body) {
-            console.log(response.body)
-            new Promise((resolve) => setTimeout(resolve, 4000));
-            //console.log(JSON.stringify(response.body))
-        })
+let next21DaysStrings = [];
+
+let numSaturdays = 0;
+for (var i = 0; numSaturdays < 3; i++) {
+  next21DaysStrings[i] = now.format(formatString);
+
+  if (now.day() == 6) numSaturdays++;
+  now.add(1, "days");
+}
+
+var errors = 0;
+
+let timeout = 0;
+
+for (
+  var meetingRoomIndex = 0;
+  meetingRoomIndex < meetingRooms.length;
+  meetingRoomIndex++
+) {
+  for (
+    var durationIndex = 0;
+    durationIndex < durations.length;
+    durationIndex++
+  ) {
+    for (var dayIndex = 0; dayIndex < next21DaysStrings.length; dayIndex++) {
+      sendRequest(meetingRoomIndex, durationIndex, dayIndex, timeout);
+      ++timeout;
     }
-    console.log(result);
-    await browser.close();
-  } 
-    catch (err) {
-        console.error(err);
   }
-})();
+}
+
+function sendRequest(a, b, c, d) {
+  let options = {
+    method: "GET",
+    url: "http://reslife.ucla.edu/reserve",
+    qs: {
+      type: meetingRooms[a],
+      duration: durations[b],
+      date: next21DaysStrings[c],
+      partial: ""
+    },
+    headers: {},
+    callback: function(error, response, body) {
+      if (error) {
+        ++errors;
+        console.log(errors);
+        sendRequest(a, b, c, 0);
+      } else {
+        console.log("worked correctly");
+      }
+    }
+  };
+  setTimeout(o => request(o), 0, options);
+}
