@@ -298,20 +298,58 @@ app.post('/location', function(req, res) {
 
 //Get libinfo
 app.get('/libinfo', function(req, res) {
-	var query = {
-		TableName: "lib_info",
-	};
+	if(!req.query.name){
+		var query = {
+			TableName: "lib_info",
+		};
 
-	dynamodb.scan(query, function(err, data) {
-		if (err) {
-			throw err;
-			res.send("err")
+		dynamodb.scan(query, function(err, data) {
+			if (err) {
+				throw err;
+				res.send("err")
+			}
+			res.send(JSON.stringify(data));
+		});
+	}
+	else {
+		var query = {
+			TableName: "lib_info",
 		}
-		res.send(JSON.stringify(data));
-	});
+		var keyType = "";
+		query.ExpressionAttributeValues = {};
+		query.ExpressionAttributeNames = {};
+
+		if(req.query.name){
+			query.IndexName = "name-index";
+			query.KeyConditionExpression = "#nm = :name";
+			query.ExpressionAttributeNames["#nm"] = "name";
+			query.ExpressionAttributeValues[":name"] = req.query.name;
+			keyType = "name";
+		}
+
+		var FilterArr = [];
+
+		if(req.query.name && keyType != "name"){
+			FilterArr.push("#nm = :name");
+			query.ExpressionAttributeNames["#nm"] = "name";
+			query.ExpressionAttributeValues[":name"] = req.query.name;
+		}
+
+		if(FilterArr.length > 0){
+			query.FilterExpression = FilterArr.join(" and ");
+		}
+
+		docClient.query(query,function(err, data){
+			if(err){
+				throw err;
+				res.send("err");
+			}
+			res.send(data);
+		});
+	}
 });
 
-
+/* OLD libinfo get with name parameter
 app.get('/libinfo/:name', function(req, res) {
 	var query = {
 		TableName: "lib_info",
@@ -328,6 +366,7 @@ app.get('/libinfo/:name', function(req, res) {
 		res.send(data);
 	});
 });
+*/
 
 
 
