@@ -10,8 +10,8 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 
 var app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ limit: "500mb", extended: true }));
+app.use(bodyParser.json({ limit: "500mb" }));
 
 /*Temporary DB structure (feel free to add to prototypes)
 
