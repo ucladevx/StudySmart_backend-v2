@@ -481,16 +481,22 @@ app.post("/studyinfo", function(req, res) {
       }
     };
 
-    docClient.put(entry, function(err, data) {
-      completed++;
-      if (err) {
-        //throw err;
-        res.send(err);
-      }
-      if (completed == arrLength) {
-        res.send("done");
-      }
-    });
+    setTimeout(
+      e => {
+        docClient.put(e, function(err, data) {
+          completed++;
+          if (err) {
+            //throw err;
+            res.send(err);
+          }
+          if (completed == arrLength) {
+            res.send("done");
+          }
+        });
+      },
+      0,
+      entry
+    );
   });
 });
 
