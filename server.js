@@ -401,7 +401,7 @@ app.get("/studyinfo", function(req, res) {
       query.IndexName = "start-index";
       query.KeyConditionExpression = "#st = :start";
       query.ExpressionAttributeNames["#st"] = "start";
-      query.ExpressionAttributeValues[":start"] = req.query.start;
+      query.ExpressionAttributeValues[":start"] = req.query.time;
       keyType = "start";
     }
 
@@ -425,7 +425,7 @@ app.get("/studyinfo", function(req, res) {
     if (req.query.time && keyType != "start") {
       FilterArr.push("#st = :start");
       query.ExpressionAttributeNames["#st"] = "start";
-      query.ExpressionAttributeValues[":start"] = req.query.start;
+      query.ExpressionAttributeValues[":start"] = req.query.time;
     }
 
     if (FilterArr.length > 0) {
