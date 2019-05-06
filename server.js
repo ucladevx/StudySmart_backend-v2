@@ -448,56 +448,71 @@ app.post("/studyinfo", function(req, res) {
   var arrLength = infoArr.length;
   var completed = 0;
 
-  infoArr.forEach(info => {
-    var splitLink = info.Link.split("?")
-      .join("=")
-      .split("&")
-      .join("=")
-      .split("=");
-    var infoName, infoDate, infoDuration, infoStart;
-
-    for (var i = 0; i < splitLink.length; i++) {
-      if (splitLink[i] == "type") {
-        infoName = splitLink[i + 1];
-      } else if (splitLink[i] == "date") {
-        infoDate = splitLink[i + 1];
-      } else if (splitLink[i] == "duration") {
-        infoDuration = splitLink[i + 1];
-      } else if (splitLink[i] == "start") {
-        infoStart = splitLink[i + 1];
-      }
+  var overallQuery = {
+    TableName: "study_info",
+    Key: {
+      HashKey: "overall"
+    },
+    UpdateExpression: 'set timestamp = :x',
+    ExpressionAttributeValues: {
+      ":x": infoArr[0].timestamp
     }
+  }
+  
+  docClient.update(overallQuery, function(err, data){
+    infoArr.forEach(info => {
+      var splitLink = info.Link.split("?")
+        .join("=")
+        .split("&")
+        .join("=")
+        .split("=");
+      var infoName, infoDate, infoDuration, infoStart;
 
-    var entry = {
-      TableName: "study_info",
-      Item: {
-        link: info.Link,
-        name: infoName,
-        date: infoDate,
-        duration: infoDuration,
-        start: infoStart,
-        details: info["Room Details"],
-        time: info.Time
+      for (var i = 0; i < splitLink.length; i++) {
+        if (splitLink[i] == "type") {
+          infoName = splitLink[i + 1];
+        } else if (splitLink[i] == "date") {
+          infoDate = splitLink[i + 1];
+        } else if (splitLink[i] == "duration") {
+          infoDuration = splitLink[i + 1];
+        } else if (splitLink[i] == "start") {
+          infoStart = splitLink[i + 1];
+        }
       }
-    };
 
-    setTimeout(
-      e => {
-        docClient.put(e, function(err, data) {
-          completed++;
-          if (err) {
-            //throw err;
-            res.send(err);
-          }
-          if (completed == arrLength) {
-            res.send("done");
-          }
-        });
-      },
-      0,
-      entry
-    );
-  });
+      var entry = {
+        TableName: "study_info",
+        Item: {
+          link: info.Link,
+          name: infoName,
+          date: infoDate,
+          duration: infoDuration,
+          start: infoStart,
+          details: info["Room Details"],
+          time: info.Time,
+          timestamp: info.timestamp
+        }
+      };
+
+      setTimeout(
+        e => {
+          docClient.put(e, function(err, data) {
+            completed++;
+            if (err) {
+              //throw err;
+              res.send(err);
+            }
+            if (completed == arrLength) {
+              res.send("done");
+            }
+          });
+        },
+        0,
+        entry
+      );
+    });
+  })
+
 });
 
 app.listen(process.env.PORT || 3000);
