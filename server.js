@@ -360,84 +360,93 @@ app.get("/studyinfo", function(req, res) {
     !req.query.time
   ) {
     var query = {
-      TableName: "study_info"
+      TableName: "study_info",
+      Key: {
+        link: "overall"
+      },
     };
 
-    dynamodb.scan(query, function(err, data) {
+    docClient.get(query, function(err, data) {
       if (err) {
         throw err;
         res.send("err");
       }
-      res.send(JSON.stringify(data));
+
+      var query = {
+        TableName: "study_info",
+        Key: {
+          link: "overall"
+        },
+        IndexName = "timestamp-index";
+        KeyConditionExpression = "#ts = :timestamp";
+        ExpressionAttributeNames["#ts"] = "timestamp";
+        ExpressionAttributeValues[":timestamp"] = data.Item.timestamp;
+      };
+
+      docClient.query(query, function(err, data) {
+        if (err) {
+          throw err;
+          res.send("err");
+        }
+        res.send(data);
+      });
     });
   } else {
-    var query = {
-      TableName: "study_info"
-    };
-
-    var keyType = "";
-    query.ExpressionAttributeValues = {};
-    query.ExpressionAttributeNames = {};
-
-    if (req.query.name) {
-      query.IndexName = "name-index";
-      query.KeyConditionExpression = "#nm = :name";
-      query.ExpressionAttributeNames["#nm"] = "name";
-      query.ExpressionAttributeValues[":name"] = req.query.name;
-      keyType = "name";
-    } else if (req.query.date) {
-      query.IndexName = "date-index";
-      query.KeyConditionExpression = "#dt = :date";
-      query.ExpressionAttributeNames["#dt"] = "date";
-      query.ExpressionAttributeValues[":date"] = req.query.date;
-      keyType = "date";
-    } else if (req.query.duration) {
-      query.IndexName = "duration-index";
-      query.KeyConditionExpression = "#dur = :duration";
-      query.ExpressionAttributeNames["#dur"] = "duration";
-      query.ExpressionAttributeValues[":duration"] = req.query.duration;
-      keyType = "duration";
-    } else if (req.query.time) {
-      query.IndexName = "start-index";
-      query.KeyConditionExpression = "#st = :start";
-      query.ExpressionAttributeNames["#st"] = "start";
-      query.ExpressionAttributeValues[":start"] = req.query.time;
-      keyType = "start";
-    }
-
-    var FilterArr = [];
-
-    if (req.query.name && keyType != "name") {
-      FilterArr.push("#nm = :name");
-      query.ExpressionAttributeNames["#nm"] = "name";
-      query.ExpressionAttributeValues[":name"] = req.query.name;
-    }
-    if (req.query.date && keyType != "date") {
-      FilterArr.push("#dt = :date");
-      query.ExpressionAttributeNames["#dt"] = "date";
-      query.ExpressionAttributeValues[":date"] = req.query.date;
-    }
-    if (req.query.duration && keyType != "duration") {
-      FilterArr.push("#dur = :duration");
-      query.ExpressionAttributeNames["#dur"] = "duration";
-      query.ExpressionAttributeValues[":duration"] = req.query.duration;
-    }
-    if (req.query.time && keyType != "start") {
-      FilterArr.push("#st = :start");
-      query.ExpressionAttributeNames["#st"] = "start";
-      query.ExpressionAttributeValues[":start"] = req.query.time;
-    }
-
-    if (FilterArr.length > 0) {
-      query.FilterExpression = FilterArr.join(" and ");
-    }
-
-    docClient.query(query, function(err, data) {
+    docClient.get(query, function(err, data) {
       if (err) {
         throw err;
         res.send("err");
       }
-      res.send(data);
+
+      var query = {
+        TableName: "study_info",
+        Key: {
+          link: "overall"
+        },
+        IndexName = "timestamp-index";
+        KeyConditionExpression = "#ts = :timestamp";
+        ExpressionAttributeNames["#ts"] = "timestamp";
+        ExpressionAttributeValues[":timestamp"] = data.Item.timestamp;
+      };
+
+      var keyType = "";
+      query.ExpressionAttributeValues = {};
+      query.ExpressionAttributeNames = {};
+
+      var FilterArr = [];
+
+      if (req.query.name) {
+        FilterArr.push("#nm = :name");
+        query.ExpressionAttributeNames["#nm"] = "name";
+        query.ExpressionAttributeValues[":name"] = req.query.name;
+      }
+      if (req.query.date) {
+        FilterArr.push("#dt = :date");
+        query.ExpressionAttributeNames["#dt"] = "date";
+        query.ExpressionAttributeValues[":date"] = req.query.date;
+      }
+      if (req.query.duration) {
+        FilterArr.push("#dur = :duration");
+        query.ExpressionAttributeNames["#dur"] = "duration";
+        query.ExpressionAttributeValues[":duration"] = req.query.duration;
+      }
+      if (req.query.time) {
+        FilterArr.push("#st = :start");
+        query.ExpressionAttributeNames["#st"] = "start";
+        query.ExpressionAttributeValues[":start"] = req.query.time;
+      }
+
+      if (FilterArr.length > 0) {
+        query.FilterExpression = FilterArr.join(" and ");
+      }
+
+      docClient.query(query, function(err, data) {
+        if (err) {
+          throw err;
+          res.send("err");
+        }
+        res.send(data);
+      });
     });
   }
 });
@@ -451,7 +460,7 @@ app.post("/studyinfo", function(req, res) {
   var overallQuery = {
     TableName: "study_info",
     Key: {
-      HashKey: "overall"
+      link: "overall"
     },
     UpdateExpression: 'set timestamp = :x',
     ExpressionAttributeValues: {
