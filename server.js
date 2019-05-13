@@ -342,7 +342,7 @@ app.get("/busyness_graphs", function(req, res) {
 app.get("/current_busyness", function(req, res) {
   var query = {
     TableName: "lib_busyness",
-    ProjectionExpression:"name, current_busyness"
+    ProjectionExpression:"#name, current_busyness"
 
   };
 
