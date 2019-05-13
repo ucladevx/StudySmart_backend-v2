@@ -323,9 +323,10 @@ app.get("/libinfo/:name", function(req, res) {
 });
 
 //Get libinfo
-app.get("/busyness", function(req, res) {
+app.get("/busyness_graphs", function(req, res) {
   var query = {
     TableName: "lib_busyness"
+    
   };
 
   dynamodb.scan(query, function(err, data) {
@@ -336,6 +337,24 @@ app.get("/busyness", function(req, res) {
     res.send(JSON.stringify(data));
   });
 });
+
+//Get libinfo
+app.get("/current_busyness", function(req, res) {
+  var query = {
+    TableName: "lib_busyness",
+    ProjectionExpression:"name, current_busyness"
+
+  };
+
+  dynamodb.scan(query, function(err, data) {
+    if (err) {
+      throw err;
+      res.send("err");
+    }
+    res.send(JSON.stringify(data));
+  });
+});
+
 
 //Post libinfo
 app.post("/libinfo", function(req, res) {
