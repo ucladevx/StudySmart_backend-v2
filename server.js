@@ -322,6 +322,21 @@ app.get("/libinfo/:name", function(req, res) {
   });
 });
 
+//Get libinfo
+app.get("/busyness", function(req, res) {
+  var query = {
+    TableName: "lib_info"
+  };
+
+  dynamodb.scan(query, function(err, data) {
+    if (err) {
+      throw err;
+      res.send("err");
+    }
+    res.send(JSON.stringify(data));
+  });
+});
+
 //Post libinfo
 app.post("/libinfo", function(req, res) {
   var infoArr = req.body;
