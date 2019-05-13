@@ -347,7 +347,7 @@ app.get("/current_busyness", function(req, res) {
       "#name": "name"
     }
   };
-  dynamodb.get(query, function(err, data) {
+  docClient.get(query, function(err, data) {
     if (err) {
       // throw err;
       res.send(err);
