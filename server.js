@@ -352,7 +352,7 @@ app.get("/current_busyness", function(req, res) {
       // throw err;
       res.send(err);
     }
-    res.send(JSON.stringify(data));
+    res.send(data);
   });
 });
 
