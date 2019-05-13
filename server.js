@@ -331,10 +331,10 @@ app.get("/busyness_graphs", function(req, res) {
 
   dynamodb.scan(query, function(err, data) {
     if (err) {
-      throw err;
+      // throw err;
       res.send("err");
     }
-    res.send(JSON.stringify(data));
+    res.send(data);
   });
 });
 
