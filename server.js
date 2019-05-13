@@ -325,7 +325,7 @@ app.get("/libinfo/:name", function(req, res) {
 //Get libinfo
 app.get("/busyness", function(req, res) {
   var query = {
-    TableName: "lib_info"
+    TableName: "lib_busyness"
   };
 
   dynamodb.scan(query, function(err, data) {
