@@ -348,8 +348,8 @@ app.get("/current_busyness", function(req, res) {
 
   dynamodb.scan(query, function(err, data) {
     if (err) {
-      throw err;
-      res.send("err");
+      // throw err;
+      res.senderr);
     }
     res.send(JSON.stringify(data));
   });
