@@ -386,6 +386,98 @@ app.post("/libinfo", function(req, res) {
   });
 });
 
+
+//Get studyinfo
+app.get("/libinfo", function(req, res) {
+  if (
+    !req.query.name &&
+    !req.query.date &&
+    !req.query.number &&
+    !req.query.time
+  ) {
+    var query = {
+      TableName: "lib_info"
+    };
+
+    dynamodb.scan(query, function(err, data) {
+      if (err) {
+        throw err;
+        res.send("err");
+      }
+      res.send(JSON.stringify(data));
+    });
+  } else {
+    var query = {
+      TableName: "lib_info"
+    };
+
+    var keyType = "";
+    query.ExpressionAttributeValues = {};
+    query.ExpressionAttributeNames = {};
+
+    if (req.query.name) {
+      query.IndexName = "name-index";
+      query.KeyConditionExpression = "#nm = :name";
+      query.ExpressionAttributeNames["#nm"] = "name";
+      query.ExpressionAttributeValues[":name"] = req.query.name;
+      keyType = "name";
+    } else if (req.query.date) {
+      query.IndexName = "date-index";
+      query.KeyConditionExpression = "#dt = :date";
+      query.ExpressionAttributeNames["#dt"] = "date";
+      query.ExpressionAttributeValues[":date"] = req.query.date;
+      keyType = "date";
+    } else if (req.query.number) {
+      query.IndexName = "number-index";
+      query.KeyConditionExpression = "#num = :number";
+      query.ExpressionAttributeNames["#num"] = "number";
+      query.ExpressionAttributeValues[":number"] = req.query.number;
+      keyType = "number";
+    } else if (req.query.time) {
+      query.IndexName = "start-index";
+      query.KeyConditionExpression = "#st = :start";
+      query.ExpressionAttributeNames["#st"] = "start";
+      query.ExpressionAttributeValues[":start"] = req.query.time;
+      keyType = "start";
+    }
+
+    var FilterArr = [];
+
+    if (req.query.name && keyType != "name") {
+      FilterArr.push("#nm = :name");
+      query.ExpressionAttributeNames["#nm"] = "name";
+      query.ExpressionAttributeValues[":name"] = req.query.name;
+    }
+    if (req.query.date && keyType != "date") {
+      FilterArr.push("#dt = :date");
+      query.ExpressionAttributeNames["#dt"] = "date";
+      query.ExpressionAttributeValues[":date"] = req.query.date;
+    }
+    if (req.query.duration && keyType != "number") {
+      FilterArr.push("#num = :number");
+      query.ExpressionAttributeNames["#num"] = "number";
+      query.ExpressionAttributeValues[":number"] = req.query.number;
+    }
+    if (req.query.time && keyType != "start") {
+      FilterArr.push("#st = :start");
+      query.ExpressionAttributeNames["#st"] = "start";
+      query.ExpressionAttributeValues[":start"] = req.query.time;
+    }
+
+    if (FilterArr.length > 0) {
+      query.FilterExpression = FilterArr.join(" and ");
+    }
+
+    docClient.query(query, function(err, data) {
+      if (err) {
+        throw err;
+        res.send("err");
+      }
+      res.send(data);
+    });
+  }
+});
+
 //Get studyinfo
 app.get("/studyinfo", function(req, res) {
   if (
