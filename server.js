@@ -477,7 +477,7 @@ app.get("/studyinfo", function(req, res) {
   }
 });
 
-//Post libinfo
+//Post studyinfo
 app.post("/studyinfo", function(req, res) {
   var infoArr = req.body;
   var arrLength = infoArr.length;
@@ -535,9 +535,97 @@ app.post("/studyinfo", function(req, res) {
   });
 });
 
+//Get yrl&powell
+//date, day, building, start
+app.get("/librooms", function(req, res) {
+  if (
+    !req.query.building &&
+    !req.query.date &&
+    !req.query.day &&
+    !req.query.start
+  ) {
+    var query = {
+      TableName: "lib_rooms"
+    };
 
-//yrl&powell
+    dynamodb.scan(query, function(err, data) {
+      if (err) {
+        throw err;
+        res.send("err");
+      }
+      res.send(data);
+    });
+  } else {
+    var query = {
+      TableName: "lib_rooms"
+    };
 
+    var keyType = "";
+    query.ExpressionAttributeValues = {};
+    query.ExpressionAttributeNames = {};
+
+    if (req.query.building) {
+      query.IndexName = "building-index";
+      query.KeyConditionExpression = "#bg = :building";
+      query.ExpressionAttributeNames["#bg"] = "building";
+      query.ExpressionAttributeValues[":building"] = req.query.building;
+      keyType = "building";
+    } else if (req.query.date) {
+      query.IndexName = "date-index";
+      query.KeyConditionExpression = "#dt = :date";
+      query.ExpressionAttributeNames["#dt"] = "date";
+      query.ExpressionAttributeValues[":date"] = req.query.date;
+      keyType = "date";
+    } else if (req.query.day) {
+      query.IndexName = "day-index";
+      query.KeyConditionExpression = "#dy = :day";
+      query.ExpressionAttributeNames["#dy"] = "day";
+      query.ExpressionAttributeValues[":day"] = req.query.day;
+      keyType = "day";
+    } else if (req.query.start) {
+      query.IndexName = "start-index";
+      query.KeyConditionExpression = "#st = :start";
+      query.ExpressionAttributeNames["#st"] = "start";
+      query.ExpressionAttributeValues[":start"] = req.query.start;
+      keyType = "start";
+    }
+
+    var FilterArr = [];
+
+    if (req.query.building && keyType != "building") {
+      FilterArr.push("#bg = :building");
+      query.ExpressionAttributeNames["#bg"] = "building";
+      query.ExpressionAttributeValues[":building"] = req.query.building;
+    }
+    if (req.query.date && keyType != "date") {
+      FilterArr.push("#dt = :date");
+      query.ExpressionAttributeNames["#dt"] = "date";
+      query.ExpressionAttributeValues[":date"] = req.query.date;
+    }
+    if (req.query.day && keyType != "day") {
+      FilterArr.push("#dy = :day");
+      query.ExpressionAttributeNames["#dy"] = "day";
+      query.ExpressionAttributeValues[":day"] = req.query.day;
+    }
+    if (req.query.start && keyType != "start") {
+      FilterArr.push("#st = :start");
+      query.ExpressionAttributeNames["#st"] = "start";
+      query.ExpressionAttributeValues[":start"] = req.query.start;
+    }
+
+    if (FilterArr.length > 0) {
+      query.FilterExpression = FilterArr.join(" and ");
+    }
+
+    docClient.query(query, function(err, data) {
+      if (err) {
+        throw err;
+        res.send("err");
+      }
+      res.send(data);
+    });
+  }
+});
 
 //Post yrl & powell
 app.post("/librooms", function(req, res) {
