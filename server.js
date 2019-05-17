@@ -301,7 +301,7 @@ app.get("/libinfo", function(req, res) {
       throw err;
       res.send("err");
     }
-    res.send(JSON.stringify(data));
+    res.send(data);
   });
 });
 
@@ -368,7 +368,7 @@ app.get("/studyinfo", function(req, res) {
         throw err;
         res.send("err");
       }
-      res.send(JSON.stringify(data));
+      res.send(data);
     });
   } else {
     var query = {
@@ -478,6 +478,51 @@ app.post("/studyinfo", function(req, res) {
         start: infoStart,
         details: info["Room Details"],
         time: info.Time
+      }
+    };
+
+    setTimeout(
+      e => {
+        docClient.put(e, function(err, data) {
+          completed++;
+          if (err) {
+            //throw err;
+            res.send(err);
+          }
+          if (completed == arrLength) {
+            res.send("done");
+          }
+        });
+      },
+      0,
+      entry
+    );
+  });
+});
+
+
+//yrl&powell
+
+
+//Post yrl & powell
+app.post("/librooms", function(req, res) {
+  var infoArr = req.body;
+  var arrLength = infoArr.length;
+  var completed = 0;
+ // var combinedString = info.Room + "," + info["Building Name"]+ ","  + info.Capacity + ","+ info.Date+ "," + info.Day+ "," + info["Start Time"]+ "," + "30"
+
+  infoArr.forEach(info => {
+    var entry = {
+      TableName: "lib_rooms",
+      Item: {
+        combined: info.Room + "," + info["Building Name"]+ ","  + info.Capacity + ","+ info.Date+ "," + info.Day+ "," + info["Start Time"]+ "," + "30",
+        room: info.Room,
+        building: info["Building Name"],
+        capacity: info.Capacity,
+        date: info.Date, //change to date format
+        day: info.Day,
+        start: info["Start Time"], //change to seconds?
+        duration: "30"
       }
     };
 
