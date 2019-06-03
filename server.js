@@ -536,12 +536,12 @@ app.post("/studyinfo", function(req, res) {
 });
 
 //Get yrl&powell
-//date, day, building, start
+//date, duration, building, start
 app.get("/librooms", function(req, res) {
   if (
     !req.query.building &&
     !req.query.date &&
-    !req.query.day &&
+    !req.query.duration &&
     !req.query.start
   ) {
     var query = {
@@ -576,12 +576,12 @@ app.get("/librooms", function(req, res) {
       query.ExpressionAttributeNames["#dt"] = "date";
       query.ExpressionAttributeValues[":date"] = req.query.date;
       keyType = "date";
-    } else if (req.query.day) {
-      query.IndexName = "day-index";
-      query.KeyConditionExpression = "#dy = :day";
-      query.ExpressionAttributeNames["#dy"] = "day";
-      query.ExpressionAttributeValues[":day"] = req.query.day;
-      keyType = "day";
+    } else if (req.query.duration) {
+      query.IndexName = "duration-index";
+      query.KeyConditionExpression = "#dur = :duration";
+      query.ExpressionAttributeNames["#dur"] = "duration";
+      query.ExpressionAttributeValues[":duration"] = req.query.duration;
+      keyType = "duration";
     } else if (req.query.start) {
       query.IndexName = "start-index";
       query.KeyConditionExpression = "#st = :start";
@@ -602,10 +602,10 @@ app.get("/librooms", function(req, res) {
       query.ExpressionAttributeNames["#dt"] = "date";
       query.ExpressionAttributeValues[":date"] = req.query.date;
     }
-    if (req.query.day && keyType != "day") {
-      FilterArr.push("#dy = :day");
-      query.ExpressionAttributeNames["#dy"] = "day";
-      query.ExpressionAttributeValues[":day"] = req.query.day;
+    if (req.query.duration && keyType != "duration") {
+      FilterArr.push("#dur = :duration");
+      query.ExpressionAttributeNames["#dur"] = "duration";
+      query.ExpressionAttributeValues[":duration"] = req.query.duration;
     }
     if (req.query.start && keyType != "start") {
       FilterArr.push("#st = :start");
@@ -628,7 +628,7 @@ app.get("/librooms", function(req, res) {
 });
 
 //Post yrl & powell
-app.post("/librooms", function(req, res) {
+/*app.post("/librooms", function(req, res) {
   var infoArr = req.body;
   var arrLength = infoArr.length;
   var completed = 0;
@@ -666,6 +666,6 @@ app.post("/librooms", function(req, res) {
       entry
     );
   });
-});
+});*/
 
 app.listen(process.env.PORT || 3000);
