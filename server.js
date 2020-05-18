@@ -3,6 +3,7 @@ var bodyParser = require("body-parser");
 var { OAuth2Client } = require("google-auth-library");
 var io = require("socket.io-client");
 var AWS = require("aws-sdk");
+const { Client } = require("pg")
 
 AWS.config.update({ region: "us-east-1" });
 var dynamodb = new AWS.DynamoDB();
@@ -37,7 +38,7 @@ class Collection:
 	_id: (primary key in db)
 	name: (name of class, MongoDB index exists for this field)
 	schedule: [{
-		day: 
+		day:
 		startTime:
 		endTime:
 	}]
@@ -52,7 +53,7 @@ class Collection:
 classChat Collection:
 
 {
-	_id: 
+	_id:
 	chatMessages: {[
 		time: (time when message was sent)
 		text: (actual content)
@@ -64,7 +65,7 @@ classChat Collection:
 location Collection:
 
 {
-	name: 
+	name:
 	type: (library/study room/special)
 	mapCoords: (not sure how to implement)
 	activityLevel: (not sure how to measure)
@@ -77,7 +78,7 @@ var CLIENT_ID =
 const oauthClient = new OAuth2Client(CLIENT_ID);
 
 var origin = "https://google.com";
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", origin || "*");
   res.header(
     "Access-Control-Allow-Methods",
@@ -87,7 +88,7 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get("/", function(req, res) {
+app.get("/", function (req, res) {
   var query = {
     TableName: "user",
     Key: {
@@ -95,7 +96,7 @@ app.get("/", function(req, res) {
     }
   };
 
-  docClient.get(query, function(err, data) {
+  docClient.get(query, function (err, data) {
     if (err) {
       //throw err;
       res.send("err");
@@ -107,18 +108,18 @@ app.get("/", function(req, res) {
 //USER SECTION
 
 //Get all user info
-app.get("/user/:id", function(req, res) {
+app.get("/user/:id", function (req, res) {
   //var userId = req.params.id;
   var socialId = req.params.socialId;
 
-  MongoClient.connect(url, function(err, db) {
+  MongoClient.connect(url, function (err, db) {
     if (err)
       //throw err;
       res.send(err);
     console.log("Database connected");
 
-    const verifyToken = new Promise(function(resolve, reject) {
-      client.verifyIdToken(socialId, CLIENT_ID, function(e, login) {
+    const verifyToken = new Promise(function (resolve, reject) {
+      client.verifyIdToken(socialId, CLIENT_ID, function (e, login) {
         if (login) {
           var payload = login.getPayload();
           var googleId = payload["sub"];
@@ -130,7 +131,7 @@ app.get("/user/:id", function(req, res) {
     });
 
     verifyToken
-      .then(function(userId) {
+      .then(function (userId) {
         var query = {
           TableName: "user",
           Key: {
@@ -138,7 +139,7 @@ app.get("/user/:id", function(req, res) {
           }
         };
 
-        docClient.get(params, function(err, data) {
+        docClient.get(params, function (err, data) {
           if (err)
             //throw err;
             res.send(err);
@@ -149,7 +150,7 @@ app.get("/user/:id", function(req, res) {
         dbo
           .collection("user")
           .find(query)
-          .toArray(function(err, result) {
+          .toArray(function (err, result) {
             if (err)
               //throw err;
               res.send(err);
@@ -168,7 +169,7 @@ app.get("/user/:id", function(req, res) {
             res.json(resjson);
           });
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.log(err);
         var resjson = {
           error: "Authentication error",
@@ -183,12 +184,12 @@ app.get("/user/:id", function(req, res) {
 });
 
 //Use this for sign in
-app.post("/user/:id", function(req, res) {
+app.post("/user/:id", function (req, res) {
   //var userId = req.params.id;
   var socialId = req.params.socialId;
 
-  const verifyToken = new Promise(function(resolve, reject) {
-    client.verifyIdToken(socialId, CLIENT_ID, function(e, login) {
+  const verifyToken = new Promise(function (resolve, reject) {
+    client.verifyIdToken(socialId, CLIENT_ID, function (e, login) {
       if (login) {
         var payload = login.getPayload();
         var googleId = payload["sub"];
@@ -200,13 +201,13 @@ app.post("/user/:id", function(req, res) {
   });
 
   verifyToken
-    .then(function(userId) {
+    .then(function (userId) {
       var query = { _id: userId };
       var dbo = db.db("studysmart");
       dbo
         .collection("user")
         .find(query)
-        .toArray(function(err, result) {
+        .toArray(function (err, result) {
           if (err)
             //throw err;
             res.send(err);
@@ -222,7 +223,7 @@ app.post("/user/:id", function(req, res) {
 
             dbo
               .collection("user")
-              .insertOneAndUpdate(newUser, function(err, result) {
+              .insertOneAndUpdate(newUser, function (err, result) {
                 if (err)
                   //throw err;
                   res.send(err);
@@ -239,7 +240,7 @@ app.post("/user/:id", function(req, res) {
             var toupdate = { $set: { socialId: socialId } };
             dbo
               .collection("user")
-              .findOneAndUpdate(query, toupdate, function(err, result) {
+              .findOneAndUpdate(query, toupdate, function (err, result) {
                 if (err)
                   //throw err;
                   res.send(err);
@@ -255,7 +256,7 @@ app.post("/user/:id", function(req, res) {
           }
         });
     })
-    .catch(function(err) {
+    .catch(function (err) {
       console.log(err);
       var resjson = {
         error: "Authentication error",
@@ -271,41 +272,41 @@ app.post("/user/:id", function(req, res) {
 //CLASSES SECTION
 
 //Get all class info, search by name or id
-app.get("/class", function(req, res) {});
+app.get("/class", function (req, res) { });
 
 //Get class chat (or the last few messages). Start socket connection, and allow user to post chats
-app.get("/classchat/:id", function(req, res) {});
+app.get("/classchat/:id", function (req, res) { });
 
 //Create a new class (and class chat), check if name conflict
-app.post("/class", function(req, res) {});
+app.post("/class", function (req, res) { });
 
 //LOCATIONS SECTION
 
 //Get locations, possibly all or some locations
-app.get("/locations", function(req, res) {});
+app.get("/locations", function (req, res) { });
 
 //Get location info
-app.get("/location/:id", function(req, res) {});
+app.get("/location/:id", function (req, res) { });
 
 //Post location info
-app.post("/location", function(req, res) {});
+app.post("/location", function (req, res) { });
 
 //Get libinfo
-app.get("/libinfo", function(req, res) {
+app.get("/libinfo", function (req, res) {
   var query = {
     TableName: "lib_info"
   };
 
-  dynamodb.scan(query, function(err, data) {
+  dynamodb.scan(query, function (err, data) {
     if (err) {
       throw err;
       res.send("err");
     }
-    res.send(data);
+    res.send(JSON.stringify(data));
   });
 });
 
-app.get("/libinfo/:name", function(req, res) {
+app.get("/libinfo/:name", function (req, res) {
   var query = {
     TableName: "lib_info",
     Key: {
@@ -313,7 +314,7 @@ app.get("/libinfo/:name", function(req, res) {
     }
   };
 
-  docClient.get(query, function(err, data) {
+  docClient.get(query, function (err, data) {
     if (err) {
       throw err;
       res.send("err");
@@ -323,13 +324,13 @@ app.get("/libinfo/:name", function(req, res) {
 });
 
 //Get libinfo
-app.get("/busyness_graphs", function(req, res) {
+app.get("/busyness_graphs", function (req, res) {
   var query = {
     TableName: "lib_busyness"
-    
+
   };
 
-  dynamodb.scan(query, function(err, data) {
+  dynamodb.scan(query, function (err, data) {
     if (err) {
       // throw err;
       res.send("err");
@@ -339,15 +340,15 @@ app.get("/busyness_graphs", function(req, res) {
 });
 
 //Get libinfo
-app.get("/current_busyness", function(req, res) {
+app.get("/current_busyness", function (req, res) {
   var query = {
     TableName: "lib_busyness",
-    ProjectionExpression:"#name, current_busyness",
-    ExpressionAttributeNames:{
+    ProjectionExpression: "#name, current_busyness",
+    ExpressionAttributeNames: {
       "#name": "name"
     }
   };
-  dynamodb.scan(query, function(err, data) {
+  dynamodb.scan(query, function (err, data) {
     if (err) {
       // throw err;
       res.send(err);
@@ -358,7 +359,7 @@ app.get("/current_busyness", function(req, res) {
 
 
 //Post libinfo
-app.post("/libinfo", function(req, res) {
+app.post("/libinfo", function (req, res) {
   var infoArr = req.body;
   var arrLength = infoArr.length;
   var completed = 0;
@@ -373,7 +374,7 @@ app.post("/libinfo", function(req, res) {
       }
     };
 
-    docClient.put(entry, function(err, data) {
+    docClient.put(entry, function (err, data) {
       completed++;
       if (err) {
         //throw err;
@@ -386,8 +387,270 @@ app.post("/libinfo", function(req, res) {
   });
 });
 
+//Get libinfo-v2
+/*
+Expected Output: one big JSON object where each library is a property of the object and is organized as shown below:
+
+"Arts Library": {
+    "location": "1400 Public Affairs Building, Los Angeles, CA 90095-1392",
+    "phone": "(310) 206-5425",
+    "department": {
+      "Arts Library": [
+        {
+          "dp_open_time": "1pm - 5pm",
+          "date": "Su 13"
+        },
+        {
+          "dp_open_time": "8am - 9pm",
+          "date": "M 14"
+        },
+        {
+          "dp_open_time": "8am - 9pm",
+          "date": "Tu 15"
+        },
+        {
+          "dp_open_time": "8am - 9pm",
+          "date": "W 16"
+        },
+        {
+          "dp_open_time": "8am - 9pm",
+          "date": "Th 17"
+        },
+        {
+          "dp_open_time": "8am - 5pm",
+          "date": "F 18"
+        },
+        {
+          "dp_open_time": "1pm - 5pm",
+          "date": "Sa 19"
+        }
+      ],
+      "CLICC Laptop & iPad Lending (Arts Library)": [
+        {
+          "dp_open_time": "1pm - 4:30pm",
+          "date": "Su 13"
+        },
+        {
+          "dp_open_time": "8am - 8:30pm",
+          "date": "M 14"
+        },
+        {
+          "dp_open_time": "8am - 8:30pm",
+          "date": "Tu 15"
+        },
+        {
+          "dp_open_time": "8am - 8:30pm",
+          "date": "W 16"
+        },
+        {
+          "dp_open_time": "8am - 8:30pm",
+          "date": "Th 17"
+        },
+        {
+          "dp_open_time": "8am - 4:30pm",
+          "date": "F 18"
+        },
+        {
+          "dp_open_time": "1pm - 4:30pm",
+          "date": "Sa 19"
+        }
+      ],
+      "Reference Desk": [
+        {
+          "dp_open_time": "Closed",
+          "date": "Su 13"
+        },
+        {
+          "dp_open_time": "11am - 4pm",
+          "date": "M 14"
+        },
+        {
+          "dp_open_time": "11am - 4pm",
+          "date": "Tu 15"
+        },
+        {
+          "dp_open_time": "11am - 4pm",
+          "date": "W 16"
+        },
+        {
+          "dp_open_time": "11am - 4pm",
+          "date": "Th 17"
+        },
+        {
+          "dp_open_time": "11am - 4pm",
+          "date": "F 18"
+        },
+        {
+          "dp_open_time": "Closed",
+          "date": "Sa 19"
+        }
+      ]
+    }
+  }
+*/
+
+app.get("/v2/num_rooms_free_at/:day/:time", function (req, res) {
+  var query = {
+    TableName: "lib_info"
+  };
+
+  const client = new Client({
+    user: 'studyroot',
+    host: 'studysmart-db.chpjzhfmtelr.us-west-1.rds.amazonaws.com',
+    database: 'mydb',
+    password: 'studysmart-db',
+    port: '5432'
+  });
+
+  var day = req.params.day;
+  var time = req.params.time;
+  client.connect();
+  client.query("SELECT building, count(*) \
+                FROM classroom_availabilities\
+                WHERE start_time<$1 AND end_time>$2 AND day=$3\
+                GROUP BY building\
+                ORDER BY building",
+    [time, time, day], (err1, result1) => {
+      if (err1) {
+        console.log(err1.stack);
+        client.end();
+      } else {
+        res.send(result1);
+        client.end();
+      }
+    });
+});
+
+app.get("/v2/get_rooms/:building/:day/:time", function (req, res) {
+  var query = {
+    TableName: "lib_info"
+  };
+
+  const client = new Client({
+    user: 'studyroot',
+    host: 'studysmart-db.chpjzhfmtelr.us-west-1.rds.amazonaws.com',
+    database: 'mydb',
+    password: 'studysmart-db',
+    port: '5432'
+  });
+
+  var day = req.params.day;
+  var time = req.params.time;
+  var building = req.params.building;
+
+  client.connect();
+  client.query("SELECT building,room, end_time-$1  as amount_of_time\
+                FROM classroom_availabilities\
+                WHERE start_time<$1 AND end_time>$2 AND day=$3 AND building=$4\
+                ORDER BY amount_of_time DESC",
+    [time, time, day, building], (err1, result1) => {
+      if (err1) {
+        console.log(err1.stack);
+        client.end();
+      } else {
+        res.send(result1);
+        client.end();
+      }
+    });
+});
+
+
+
+app.get("/v2/get_room_timetable/:building/:room", function (req, res) {
+  var query = {
+    TableName: "lib_info"
+  };
+
+  const client = new Client({
+    user: 'studyroot',
+    host: 'studysmart-db.chpjzhfmtelr.us-west-1.rds.amazonaws.com',
+    database: 'mydb',
+    password: 'studysmart-db',
+    port: '5432'
+  });
+
+  var building = req.params.building;
+  var room = req.params.room;
+
+  client.connect();
+  client.query("SELECT * \
+                FROM classroom_availabilities\
+                WHERE room=$1 AND building=$2",
+    [room, building], (err1, result1) => {
+      if (err1) {
+        console.log(err1.stack);
+        client.end();
+      } else {
+        res.send(result1);
+        client.end();
+      }
+    });
+});
+
+
+
+app.get("/v2/libinfo", function (req, res) {
+  var query = {
+    TableName: "lib_info"
+  };
+
+  const client = new Client({
+    user: 'studyroot',
+    host: 'studysmart-db.chpjzhfmtelr.us-west-1.rds.amazonaws.com',
+    database: 'mydb',
+    password: 'studysmart-db',
+    port: '5432'
+  });
+
+  client.connect();
+  client.query('select * from libraries', (err1, result1) => {
+    if (err1) {
+      console.log(err1.stack);
+      client.end();
+    } else {
+      client.query('select * from library_hours', (err2, result2) => {
+        if (err2) {
+          console.log(err2.stack);
+          client.end();
+        } else {
+          var outJson = {};
+          const libData = result1.rows;
+          const hrData = result2.rows;
+          //create field for each library
+          for (var i = 0; i < libData.length; i++) {
+            var libName = libData[i].name;
+            var libLoc = libData[i].location;
+            var libPhone = libData[i].phone;
+
+            outJson[libName] = {};
+            outJson[libName].location = libLoc;
+            outJson[libName].phone = libPhone;
+            outJson[libName].department = {};
+            //outJson[libName].department = [];
+          }
+
+          for (var i = 0; i < hrData.length; i++) {
+            var libName = hrData[i].library_name;
+            var depName = hrData[i].dep_name;
+            var date = hrData[i].date;
+            var times = hrData[i].times;
+
+            if (!(depName in outJson[libName].department)) {
+              outJson[libName].department[depName] = [];
+            }
+            var temp = { "dp_open_time": times, "date": date };
+            outJson[libName].department[depName].push(temp);
+          }
+          res.send(outJson);
+          client.end();
+        }
+      });
+    }
+  });
+});
+
 //Get studyinfo
-app.get("/studyinfo", function(req, res) {
+app.get("/studyinfo", function (req, res) {
   if (
     !req.query.name &&
     !req.query.date &&
@@ -398,12 +661,12 @@ app.get("/studyinfo", function(req, res) {
       TableName: "study_info"
     };
 
-    dynamodb.scan(query, function(err, data) {
+    dynamodb.scan(query, function (err, data) {
       if (err) {
         throw err;
         res.send("err");
       }
-      res.send(data);
+      res.send(JSON.stringify(data));
     });
   } else {
     var query = {
@@ -467,7 +730,7 @@ app.get("/studyinfo", function(req, res) {
       query.FilterExpression = FilterArr.join(" and ");
     }
 
-    docClient.query(query, function(err, data) {
+    docClient.query(query, function (err, data) {
       if (err) {
         throw err;
         res.send("err");
@@ -477,8 +740,8 @@ app.get("/studyinfo", function(req, res) {
   }
 });
 
-//Post studyinfo
-app.post("/studyinfo", function(req, res) {
+//Post libinfo
+app.post("/studyinfo", function (req, res) {
   var infoArr = req.body;
   var arrLength = infoArr.length;
   var completed = 0;
@@ -518,7 +781,7 @@ app.post("/studyinfo", function(req, res) {
 
     setTimeout(
       e => {
-        docClient.put(e, function(err, data) {
+        docClient.put(e, function (err, data) {
           completed++;
           if (err) {
             //throw err;
@@ -667,5 +930,4 @@ app.get("/librooms", function(req, res) {
     );
   });
 });*/
-
 app.listen(process.env.PORT || 3000);
