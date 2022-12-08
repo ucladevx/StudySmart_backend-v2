@@ -19,8 +19,8 @@
   "homepage": "https://github.com/aseem191/backend-v2#readme",
   "dependencies": {
     "aws-sdk": "^2.404.0",
-    "body-parser": "^1.18.3",
-    "express": "^4.16.4",
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
     "express.js": "^1.0.0",
     "google-auth-library": "^2.0.2",
     "mongodb": "^3.1.13",
