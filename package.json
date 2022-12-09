@@ -20,7 +20,7 @@
   "dependencies": {
     "aws-sdk": "^2.404.0",
     "body-parser": "^1.18.3",
-    "express": "^4.16.4",
+    "express": "^4.17.3",
     "express.js": "^1.0.0",
     "google-auth-library": "^2.0.2",
     "mongodb": "^3.1.13",
